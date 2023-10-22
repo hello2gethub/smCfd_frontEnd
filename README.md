@@ -1,70 +1,45 @@
-# Getting Started with Create React App
+## 数马冲锋队大作业——前端合作开发仓库
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 1 启动项目
 
-## Available Scripts
+#### 1.1  下拉代码
 
-In the project directory, you can run:
+- 在本地新建一个文件夹，执行 `git init`
+- 在文件栏输入 `powerShell` , 打开命令行窗口
+- 而后执行 `git clone 项目地址` 下拉代码 
 
-### `npm start`
+#### 1.2 安装依赖包
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+执行 `npm install` 安装所有依赖包
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+#### 1.3 运行项目
 
-### `npm test`
+`npm run start`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+## 2. 协同开发
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+`git` 上我们操作同一个文件会起冲突，比如我在`master` 分支 更新了代码，但是你没有，下次你想上传就不行了。因为文件不同。
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+所以我们一起开发，**一定是每个人一个分支**，最后咱们合并。
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+具体的分支操作，可以看以前的[知识记录](https://blog.csdn.net/qq_57238596/article/details/132877461?spm=1001.2014.3001.5501)
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+> 示例
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- 假如我们在`master` 上下拉了代码并成功运行
+- 下面我们将代码进行备份 `git stash`
+- 然后创建分支 `git checkout -b 分支名`
+- 然后切换到我们自己创建的分支 `git checkout 分支名`
+- 然后将备份应用
+- 然后以后上传代码就只需要到你创建的分支上进行了
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

@@ -1,0 +1,72 @@
+header,
+.left,
+.right,
+ul {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: center;
+  padding: 0;
+}
+
+header {
+  background-color: #fff;
+  justify-content: space-between;
+  position: relative;
+  padding: 0 80px;
+  width: 1760px;
+  height: 80px;
+  color: #000;
+}
+
+.right {
+  justify-content: space-between;
+  margin-right: 40px;
+}
+
+/* 头部左侧 */
+.szmLogo {
+  width: 70px;
+  height: 70px;
+}
+
+.TeamName {
+  font-size: 20px;
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+/* 头部右侧 */
+.headerItem li {
+  width: 118px;
+  height: 80px;
+  line-height: 80px;
+  position: relative;
+}
+
+.headerItem li::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  width: 0; /* 一开始宽度为0下划线也为0看不出来 */
+  height: 80%;
+  border-bottom: 4px solid skyblue;
+  transition: all 0.2s ease-out;
+}
+
+.headerItem li:hover::before {
+  width: 50%; /* hover后宽度显示出来下划线也显示出来 */
+  top: 0;
+  left: 24%;
+  transition-delay: 0.2s;
+}
+
+.loginBtn {
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  background-color: skyblue;
+  margin-left: 100px;
+}
