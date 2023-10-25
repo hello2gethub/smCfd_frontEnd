@@ -1,0 +1,67 @@
+.lading-container {
+  width: 1920px;
+  height: 776px;
+  background-color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 100px;
+  box-sizing: border-box;
+}
+
+.lading-title {
+  font-size: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lading-container .author {
+  font-size: 18px;
+  color: rgb(109, 97, 97);
+  margin: 20px 0 40px 0;
+}
+
+.lading-container .form {
+  display: flex;
+  flex-direction: column;
+  width: 460px;
+  height: auto;
+}
+
+.lading-container .form .lading-Input {
+  height: 50px;
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.lading-container .form .form-bottom {
+  font-size: 16px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lading-container .form-bottom label {
+  cursor: pointer;
+}
+
+.lading-container .form-bottom label:last-child {
+  color: #1677ff;
+}
+
+.lading-container .form .toRegister {
+  font-size: 16px;
+  color: rgb(109, 97, 97);
+  text-align: center;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.lading-container .form .Btn {
+  margin-top: 20px;
+  height: 50px;
+  font-size: 20px;
+}

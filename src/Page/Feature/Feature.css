@@ -1,0 +1,15 @@
+.feature-container {
+  background-color: #eee;
+  width: 1920px;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.feature-content {
+  box-sizing: border-box;
+  padding: 50px 20px 30px 30px;
+  width: 1620px;
+  height: 100%;
+}

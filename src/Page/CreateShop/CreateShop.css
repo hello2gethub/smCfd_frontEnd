@@ -1,0 +1,176 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* 版心 */
+.w {
+  border-radius: 15px;
+  width: 1031px;
+  margin: 100px auto;
+  background-color: #e5f0fb;
+}
+
+.w i {
+  font-style: normal;
+  margin-right: 2px;
+  color: red;
+  margin-right: 3px;
+}
+
+/* 本页面的li都采用了浮动 和margin-right，要用li请谨慎使用 */
+.w li {
+  float: left;
+  margin-right: 30px;
+}
+
+.w h2 {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.w .inPut {
+  width: 300px;
+}
+
+.w h3 {
+  margin-bottom: 10px;
+  color: #666;
+  font-size: 16px;
+}
+
+.w .box {
+  width: 100%;
+  /* margin-top: 100px; */
+  padding: 20px;
+  padding-bottom: 100px;
+  /* background-color: #e5f0fb; */
+  /* border-radius: 15px; */
+}
+
+.w .box1 .mingcheng {
+  /* height: 90px; */
+  margin-bottom: 30px;
+  width: 100%;
+}
+
+.w .box1 .mingcheng li {
+  float: left;
+  margin-right: 30px;
+}
+
+.w .box1 .miaoshu {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.w .box1 .leixing {
+  /* height: 100px; */
+  margin-bottom: 30px;
+}
+
+.w .box1 .leixing li {
+  float: left;
+  margin-right: 30px;
+}
+
+.w .box1 .gongyingshang {
+  margin-bottom: 30px;
+}
+
+.w .box1 .gongyingshang li {
+  float: left;
+  margin-right: 30px;
+}
+
+.w .box1 .baozhang {
+  width: 100%;
+  /* margin-bottom: 20px; */
+}
+
+.w .box2 .chengshi {
+  margin-bottom: 30px;
+}
+
+.w .box2 .toufang {
+  margin-top: 30px;
+  /* background-color: pink; */
+  /* height: 175px; */
+  margin-bottom: 30px;
+}
+
+.w .box2 .toufang .toufang_1 li {
+  float: left;
+  margin: 0 20px;
+  /* width: 200px; */
+}
+
+.w .box2 .toufang .shijian {
+  width: 200px;
+}
+
+.w .box2 .anniu {
+  height: 50px;
+  /* margin-bottom: 50px; */
+  /* background-color: skyblue; */
+}
+
+.w .box2 .anniu .tijiao {
+  padding: 8px 0;
+  margin-left: 10px;
+
+  width: 80px;
+  color: #fff;
+  background-color: #3e6bff;
+  border: 1px solid rgba(193, 193, 193, 0);
+}
+
+.w .box2 .anniu .tijiao {
+  padding: 8px 0;
+  margin-left: 10px;
+  width: 80px;
+  color: #fff;
+  background-color: #3e6bff;
+  border: 1px solid rgba(193, 193, 193, 1);
+}
+
+.w .box2 .anniu .reset {
+  padding: 8px 0;
+  margin-left: 10px;
+  width: 80px;
+  color: #000000;
+  background-color: #ffffff;
+  border: 1px solid rgba(193, 193, 193, 1);
+}
+
+.w .box3 .amount {
+  width: 200px;
+}
+
+.w .box3 .addType {
+  /* margin: 50px 0; */
+  margin-top: 50px;
+  margin-right: 200px;
+  border-radius: 5px;
+  padding: 8px 10px;
+  color: #000000;
+  font-size: 15px;
+  text-align: center;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+/* 会员模块样式 box3 */
+
+/* 清除浮动 */
+.w .clearfix:after {
+  visibility: hidden;
+  clear: both;
+  display: block;
+  content: ".";
+  height: 0;
+}
+
+.w .clearfix {
+  zoom: 1;
+}

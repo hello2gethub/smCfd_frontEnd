@@ -1,13 +1,13 @@
 import { myAxios } from "../utils/myAxios";
 
-export default function Login(username, password) {
+export default function getShopList(currentPage, pageSize) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "GET",
-      url: "/json/loginAdmin.json",
+      url: "/json/shopList.json",
       data: {
-        username: username,
-        password: password,
+        currentPage: currentPage,
+        pageSize: pageSize,
       },
     })
       .then((res) => {

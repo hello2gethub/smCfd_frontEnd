@@ -1,0 +1,54 @@
+.shopList {
+  box-sizing: border-box;
+  margin-top: 30px;
+  background-color: #fff;
+  width: 1560px;
+  height: auto;
+  border-radius: 1%;
+  padding: 20px 10px;
+}
+
+.shopList .shopList-title {
+  padding: 20px 10px 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.shopList-title .iconList {
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.shopList .tabs {
+  padding: 0 10px;
+  font-size: 17px;
+}
+
+.shopList .batchCss {
+  margin-bottom: 5px;
+  display: none;
+  justify-content: space-between;
+  border-radius: 2%;
+  align-items: center;
+  color: #1677ff;
+  font-weight: 600;
+}
+
+.batchCss .selectedNum {
+  transform: translateX(20px);
+}
+
+.batchCss .batchBtn {
+  transform: translateX(-20px);
+}
+
+.shopList .pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shopList .iconFont {
+  transform: translate(5px, -1px);
+  cursor: pointer;
+}

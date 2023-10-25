@@ -1,23 +1,24 @@
 import axios from "axios";
+import React from "react";
+import { Spin } from "antd";
+
+//加载中的事件处理函数
+let loading = false;
 
 // 基本配置 baseURL,timeout,header,responseType,withCredentials
 const myAxios = axios.create({
-  baseURL: "http://127.0.0.1:8000/", //  /api/bulletinBoard
+  baseURL: "http://127.0.0.1:3000/", //  /api/bulletinBoard
   timeout: 10 * 1000,
 });
 
 //请求拦截器 ------>  即发送请求要干啥子(常见的token、密钥的设置)
 myAxios.interceptors.request.use(
   (config) => {
-    // 加载提示框
-    // showLoadingToast({
-    //   message: '加载中...',
-    //   forbidClick: true,
-    //   duration: 0
-    // })
+    loading = true; // 显示加载组件
     return config;
   },
   (err) => {
+    loading = false; // 关闭加载组件
     return Promise.reject(err);
   }
 );
@@ -25,9 +26,7 @@ myAxios.interceptors.request.use(
 // 响应拦截器  ------>  即拿到数据后要干啥子
 myAxios.interceptors.response.use(
   (res) => {
-    // console.log("响应拦截", res);
-    // 关闭加载中提示框
-    // closeToast();
+    loading = false; // 关闭加载组件
 
     // 请求成功错误处理
     const status = res.status || 200;
@@ -43,6 +42,7 @@ myAxios.interceptors.response.use(
     return res;
   },
   (err) => {
+    loading = false; // 关闭加载组件
     return Promise.reject(err);
   }
 );
@@ -76,4 +76,18 @@ const myAxiosComplexity = (function () {
   };
 })();
 
-export { myAxios, myAxiosComplexity };
+// 加载提示组件
+function Loading() {
+  return (
+    <>
+      {loading && (
+        <Spin
+          size="large"
+          style={{ position: "absolute", left: "50%", top: "50%" }}
+        />
+      )}
+    </>
+  );
+}
+
+export { myAxios, myAxiosComplexity, Loading };

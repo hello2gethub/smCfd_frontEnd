@@ -1,0 +1,28 @@
+.searchShop {
+  position: relative;
+  width: 1560px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 1%;
+  display: grid;
+  grid-gap: 0 20px;
+  grid-template-columns: repeat(4, 375px);
+  grid-template-rows: repeat(2, 100px);
+  /* grid-gap: 20px; */
+  justify-items: center;
+  align-items: center;
+}
+.searchShop .inputCss {
+  width: 240px;
+  height: 34px;
+}
+
+.searchShop .searchShopBtn {
+  position: absolute;
+  right: 30px;
+  bottom: 36px;
+}
+
+.searchShop .searchBtn {
+  margin-left: 30px;
+}

@@ -1,0 +1,11 @@
+{
+  "status": true,
+  "msg" : "登录成功!",
+  "data": {
+    "username": "代理商",
+    "token": "asdlkjasck12123asdas",
+    "userId": 2,
+    "avatar": "https://cdn.pixabay.com/photo/2023/10/16/07/55/animal-8318650_1280.jpg",
+    "grade": "operation"
+  }
+}

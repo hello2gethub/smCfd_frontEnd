@@ -1,24 +1,52 @@
 import "../../App.css";
 import "./Headers.css";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Button } from "antd";
 
 // 引入静态图片
 import szmLogo from "../../static/img/szml.jpg";
 
 export default function Headers() {
   const navigate = useNavigate();
-  const toLading = () => {
-    // document.location.href = "http://localhost:3000/lading";
-    navigate("/lading");
-  };
+  const [isLogin, setLogin] = useState(false);
+
+  const avatar = localStorage.getItem("avatar"); // 头像
+  const username = localStorage.getItem("username"); // 昵称
+
+  useEffect(() => {
+    if (localStorage.getItem("avatar") && localStorage.getItem("username")) {
+      setLogin(true);
+    }
+  }, [navigate]);
+
+  let content = (
+    <>
+      <div className="header-userinfo">
+        <img className="userAvatar" src={avatar} alt="" />
+        <div className="greet">{username} 你好~</div>
+        <div className="dropDom">
+          <div className="toUserSelf">个人信息</div>
+          <div
+            className="logOut"
+            onClick={() => {
+              localStorage.clear();
+              navigate("/");
+            }}
+          >
+            退出登录
+          </div>
+        </div>
+      </div>
+    </>
+  );
   return (
-    <header>
-      <div className="left">
+    <header className="headers">
+      <div className="header-left">
         <img className="szmLogo" src={szmLogo} alt="" />
         <div className="TeamName">数马冲锋队</div>
       </div>
-      <div className="right">
+      <div className="header-right">
         <ul className="headerItem">
           <li>
             <span>关于我们</span>
@@ -36,9 +64,19 @@ export default function Headers() {
             <span>更新动态</span>
           </li>
         </ul>
-        <button className="loginBtn" onClick={toLading}>
-          登录 / 注册
-        </button>
+        {isLogin ? (
+          content
+        ) : (
+          <Button
+            type="primary"
+            size={"default"}
+            onClick={() => {
+              navigate("/lading");
+            }}
+          >
+            登录 / 注册
+          </Button>
+        )}
       </div>
     </header>
   );

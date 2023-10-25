@@ -1,0 +1,37 @@
+{ 
+  "status": true,
+  "msg": "获取商品列表成功",
+  "data": [
+    {
+      "id": 1,
+      "shopId": "0casdasd",
+      "shopName": "0爱奇艺会员",
+      "repertory": "100",
+      "starTime": "2023-10-01",
+      "endTime": "2023-10-09",
+      "shopStatus": "运行中",
+      "agent": "admin"
+    },
+    {
+      "id": 2,
+      "shopId": "1casdasd",
+      "shopName": "1爱奇艺会员",
+      "repertory": "80",
+      "starTime": "2023-10-01",
+      "endTime": "2023-10-09",
+      "shopStatus": "已下线",
+      "agent": "admin"
+    },
+    {
+      "id": 3,
+      "shopId": "2casdasd",
+      "shopName": "2爱奇艺会员",
+      "repertory": "50",
+      "starTime": "2023-10-01",
+      "endTime": "2023-10-09",
+      "shopStatus": "运行中",
+      "agent": "admin"
+    }
+   
+  ]
+}

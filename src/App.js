@@ -7,23 +7,22 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // �
 // 引入子组件页面
 import Index from "./Page/Index/Index"; // 首页
 import Lading from "./Page/Lading/Lading"; //登录注册页面
-import Details from "./Page/Details/Details"; // 功能页面
-
-import Footers from "./Component/Footers/Footers"; // 头部组件
-import Headers from "./Component/Headers/Headers"; // 底部组件
+import Feature from "./Page/Feature/Feature"; // 功能页面
+import CreateShop from "./Page/CreateShop/CreateShop";
+import { Loading } from "./utils/myAxios";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Headers />
         <Routes>
           <Route exact path="/" element={<Index />} />
           <Route path="/lading" element={<Lading />} />
-          <Route path="details" element={<Details />} />
+          <Route path="/feature" element={<Feature />} />
+          <Route path="/createShop" element={<CreateShop />} />
         </Routes>
-        <Footers />
       </Router>
+      <Loading />
     </div>
   );
 }
