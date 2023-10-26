@@ -8,7 +8,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom"; // �
 import Index from "./Page/Index/Index"; // 首页
 import Lading from "./Page/Lading/Lading"; //登录注册页面
 import Feature from "./Page/Feature/Feature"; // 功能页面
-import CreateShop from "./Page/CreateShop/CreateShop";
+import CreateShop from "./Page/CreateShop/CreateShop"; // 创建商品页面
+import ShopDetail from "./Page/ShopDetail/ShopDetail"; // 商品详情页面
 import { Loading } from "./utils/myAxios";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/lading" element={<Lading />} />
           <Route path="/feature" element={<Feature />} />
           <Route path="/createShop" element={<CreateShop />} />
+          <Route path="/shopDetail" element={<ShopDetail />} />
         </Routes>
       </Router>
       <Loading />

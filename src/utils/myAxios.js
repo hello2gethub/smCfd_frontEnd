@@ -7,13 +7,20 @@ let loading = false;
 
 // 基本配置 baseURL,timeout,header,responseType,withCredentials
 const myAxios = axios.create({
-  baseURL: "http://127.0.0.1:3000/", //  /api/bulletinBoard
+  // baseURL: "http://127.0.0.1:3000/",
   timeout: 10 * 1000,
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 //请求拦截器 ------>  即发送请求要干啥子(常见的token、密钥的设置)
 myAxios.interceptors.request.use(
   (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `${token}`;
+    }
     loading = true; // 显示加载组件
     return config;
   },

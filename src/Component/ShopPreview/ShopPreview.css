@@ -1,0 +1,74 @@
+/* 样式 */
+.Preview {
+  position: relative;
+  width: 400px;
+  height: 540px;
+  margin: auto;
+  box-sizing: border-box;
+  /* position: relative; */
+}
+
+.Preview em,
+.Preview i {
+  font-style: normal;
+}
+
+.Preview h3 {
+  margin: 20px 0;
+}
+
+.Preview img {
+  border: 0;
+  vertical-align: middle;
+}
+
+.Preview .return {
+  position: absolute;
+  top: 30px;
+  left: 20px;
+  font-size: 30px;
+  color: #fff;
+  border: 0px;
+  background-color: transparent;
+  /* background-color: #000000; */
+}
+
+.Preview .picture2 {
+  height: 380px;
+  /* background-color: palevioletred; */
+}
+
+.Preview .shopsMsg {
+  margin: 5px 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: rgb(255, 255, 255);
+}
+
+.Preview .shopsMsg h1 {
+  font-size: 20px;
+  color: rgb(250, 124, 39);
+}
+
+.Preview .shopsMsg h2 {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.Preview .shopsMsg s,
+.Preview .shopsMsg span {
+  font-size: 10px;
+  color: #a8a8a8;
+}
+
+.Preview .shopsMsg .bottom {
+  display: flex;
+  margin-top: 10px;
+  justify-content: space-between;
+}
+
+.Preview .shopsMsg .bottom i {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgb(0, 17, 92);
+}

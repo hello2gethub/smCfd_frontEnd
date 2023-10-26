@@ -54,25 +54,27 @@ class Indexs extends React.Component {
   render() {
     return (
       <>
-        <Headers />
-        <div className="app-index">
-          <Carousel autoplay>
-            <img className="indexLogo" src={staticIndexLogo1} alt="" />
-            <img className="indexLogo" src={staticIndexLogo2} alt="" />
-            <img className="indexLogo" src={staticIndexLogo3} alt="" />
-            <img className="indexLogo" src={staticIndexLogo4} alt="" />
-          </Carousel>
-          <div className="box">
-            <div className="box-title">
-              <div className="title">用户运营</div>
-              <section>
-                渠道运营、活跃运营、忠诚度运营，贯穿运营生命周期的全栈运营
-              </section>
+        <div className="index-parent">
+          <Headers />
+          <div className="app-index">
+            <Carousel autoplay>
+              <img className="indexLogo" src={staticIndexLogo1} alt="" />
+              <img className="indexLogo" src={staticIndexLogo2} alt="" />
+              <img className="indexLogo" src={staticIndexLogo3} alt="" />
+              <img className="indexLogo" src={staticIndexLogo4} alt="" />
+            </Carousel>
+            <div className="box">
+              <div className="box-title">
+                <div className="title">用户运营</div>
+                <section>
+                  渠道运营、活跃运营、忠诚度运营，贯穿运营生命周期的全栈运营
+                </section>
+              </div>
+              <ul className="box-info">{this.userList}</ul>
             </div>
-            <ul className="box-info">{this.userList}</ul>
           </div>
+          <Footers />
         </div>
-        <Footers />
       </>
     );
   }
@@ -81,7 +83,7 @@ class Indexs extends React.Component {
 export default function Index() {
   const navigate = useNavigate();
   useEffect(() => {
-    if (localStorage.getItem("userId") || localStorage.getItem("token")) {
+    if (localStorage.getItem("autoLogin")) {
       // 如果是自动登录则自动跳转页面
       navigate("/feature");
     }

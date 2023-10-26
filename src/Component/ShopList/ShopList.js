@@ -46,6 +46,7 @@ class ShopLists extends React.Component {
     },
     selectedRowKeys: [], //选择表格行的数量
     showBox: false, // 二次确认框是否显示
+    grade: null,
   };
 
   // 管理员的表头
@@ -68,7 +69,8 @@ class ShopLists extends React.Component {
           <CopyTwoTone
             size="small"
             className="iconFont"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               copy(text);
               message.success("复制成功");
             }}
@@ -111,7 +113,8 @@ class ShopLists extends React.Component {
           <CopyTwoTone
             size="small"
             className="iconFont"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               copy(text);
               message.success("复制成功");
             }}
@@ -127,7 +130,8 @@ class ShopLists extends React.Component {
       render: (text) => (
         <>
           <Button
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation(); //阻止事件冒泡
               this.setState({ showBox: true });
             }} //开启二次确认框
             style={
@@ -151,14 +155,16 @@ class ShopLists extends React.Component {
           <Modal
             title="二次确认"
             open={this.state.showBox}
-            onOk={() => {
-              this.putRequest(text);
+            onOk={(e) => {
+              e.stopPropagation();
+              this.putRequest();
             }}
-            onCancel={() => {
+            onCancel={(e) => {
+              e.stopPropagation();
               this.setState({ showBox: false });
             }}
           >
-            <p>{`确认${text}吗？`}</p>
+            <p>{`请在次确认或点击取消`}</p>
           </Modal>
         </>
       ),
@@ -167,9 +173,10 @@ class ShopLists extends React.Component {
 
   // 相当于vue的onBeforeMonuted
   componentWillMount() {
+    const grade = localStorage.getItem("grade");
+    this.setState({ ...this.state, grade: grade });
     this.getTableData(); //执行请求数据函数
     // 根据身份信息来选择表头
-    const grade = localStorage.getItem("grade");
     if (
       grade !== "admin" &&
       this.tableTitle1[this.tableTitle1.length - 1].title === "操作"
@@ -182,20 +189,53 @@ class ShopLists extends React.Component {
   // 请求数据函数
   getTableData = () => {
     const { currentPage, pageSize } = this.state.page;
-    getShopList(currentPage, pageSize)
+    const category =
+      this.state.activeTab === "1" ? 0 : this.state.activeTab === "2" ? 1 : 2;
+    getShopList(category, currentPage, pageSize)
       .then((res) => {
-        // console.log("商品列表--", res.data.data);
-        let data = res.data.data.slice(0, pageSize); // 数据切片只展示相应条数
-        // 给商品列表加上操作字段的值
-        data.forEach((item) => {
-          item.shopStatus === "运行中"
-            ? (item.control = "下线")
-            : (item.control = "上线");
+        console.log("商品列表--", res.data.data);
+        let data = res.data.data.records.slice(0, pageSize); // 数据切片只展示相应条数
+        // 处理后端返回的数据,跟自己的对上
+        let newData = [];
+        data.forEach((item, index) => {
+          // 保险一下，怕自动转化为string，用== eslint就警告了O.O
+          if (parseInt(item.status) === 1) {
+            newData[index]["control"] = "下线";
+            newData[index]["shopStatus"] = "运行中";
+          } else {
+            newData[index]["control"] = "上线";
+            newData[index]["shopStatus"] = "已下线";
+          }
+          Object.entries(item).forEach(([key, value]) => {
+            // 每一条的key都要变成我们的
+            switch (key) {
+              case "id":
+                newData[index]["shopId"] = value;
+                newData[index]["id"] = value; // 用于循环的唯一标识
+                break;
+              case "name":
+                newData[index]["shopName"] = value;
+                break;
+              case "stock":
+                newData[index]["repertory"] = value;
+                break;
+              case "startTime":
+                newData[index]["starTime"] = value.slice(0, 10);
+                break;
+              case "endTime":
+                newData[index]["endTime"] = value.slice(0, 10);
+                break;
+              case "caretaker":
+                newData[index]["agent"] = value;
+                break;
+              default:
+                console.log(`商品列表不需要的数据--${key}: ${value}`);
+            }
+          });
         });
-
-        const total = res.data.data.length; // 数据总条数
+        const total = newData.length; // 数据总条数
         this.setState({
-          tableData: data,
+          tableData: newData,
           page: {
             ...this.state.page,
             total,
@@ -209,10 +249,9 @@ class ShopLists extends React.Component {
   };
 
   // 用户点击了二次确认，发起上线或下线请求函数
-  putRequest = (text) => {
-    console.log(text);
+  putRequest = () => {
     this.setState({ showBox: false });
-    console.log(`发起${text}请求`);
+    console.log(`发起请求`);
   };
 
   // tabs click事件
@@ -257,6 +296,12 @@ class ShopLists extends React.Component {
     this.props.navigate("/createShop");
   };
 
+  // 跳转到商品详情页
+  goToShopDetail = (record) => {
+    console.log("record---", record);
+    this.props.navigate(`/shopDetail`, { state: record.shopId });
+  };
+
   render() {
     const { activeTab, tableData, tableTitle, page, selectedRowKeys } =
       this.state;
@@ -275,7 +320,7 @@ class ShopLists extends React.Component {
           <div className="shopList-title">
             <strong>商品列表</strong>
             <div>
-              {/* {this.props.grade !== "admin" && (
+              {this.state.grade !== "admin" && (
                 <Button
                   type="primary"
                   className="iconList"
@@ -283,14 +328,7 @@ class ShopLists extends React.Component {
                 >
                   新建商品
                 </Button>
-              )} */}
-              <Button
-                type="primary"
-                className="iconList"
-                onClick={this.goToCreateShop}
-              >
-                新建商品
-              </Button>
+              )}
               <RedoOutlined className="iconList" />
               <ItalicOutlined className="iconList" />
               <SettingOutlined className="iconList" />
@@ -316,6 +354,9 @@ class ShopLists extends React.Component {
             </Button>
           </div>
           <Table
+            onRow={(record) => ({
+              onClick: () => this.goToShopDetail(record),
+            })}
             rowSelection={rowSelection}
             dataSource={tableData}
             columns={tableTitle}

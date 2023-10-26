@@ -39,15 +39,19 @@ export default class Feature extends React.Component {
   // 这里虽然被弃用了，但是用onMount的话，会获取不到menuList，如果用Effect就可以解决这个问题。
   // 之后还是用函数式组件吧，但是类式更像vue
   componentWillMount = () => {
+    // 通过用户身份进行布局处理
     const grade = localStorage.getItem("grade");
     console.log("grade--", grade);
-    if (grade !== "admin") {
+    if (grade !== "admin" && menuList.length === 2) {
       menuList.pop();
+    } else if (grade === "admin" && menuList.length === 1) {
+      menuList.push({
+        key: "dataShow",
+        icon: <PlaySquareTwoTone />,
+        text: "数据大盘",
+      });
     }
-    console.log("menuList", menuList);
-    this.setState({ menuListShow: menuList }, () => {
-      console.log("menuListShow", this.state.menuListShow);
-    });
+    this.setState({ menuListShow: menuList });
   };
 
   render() {

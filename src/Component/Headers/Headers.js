@@ -2,6 +2,7 @@ import "../../App.css";
 import "./Headers.css";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router";
 import { Button } from "antd";
 
 // 引入静态图片
@@ -9,16 +10,26 @@ import szmLogo from "../../static/img/szml.jpg";
 
 export default function Headers() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [isLogin, setLogin] = useState(false);
+  const [loginHref, setLoginHref] = useState(false);
 
   const avatar = localStorage.getItem("avatar"); // 头像
   const username = localStorage.getItem("username"); // 昵称
 
   useEffect(() => {
-    if (localStorage.getItem("avatar") && localStorage.getItem("username")) {
+    if (
+      localStorage.getItem("avatar") &&
+      localStorage.getItem("username") &&
+      localStorage.getItem("userId") &&
+      localStorage.getItem("token")
+    ) {
       setLogin(true);
     }
-  }, [navigate]);
+    if (location.pathname === "/lading") {
+      setLoginHref(true);
+    }
+  }, [navigate, location]);
 
   let content = (
     <>
@@ -71,7 +82,7 @@ export default function Headers() {
             type="primary"
             size={"default"}
             onClick={() => {
-              navigate("/lading");
+              !loginHref && navigate("/lading"); // 不是登录页才跳转到登录页
             }}
           >
             登录 / 注册

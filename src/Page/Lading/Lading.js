@@ -3,7 +3,7 @@ import "./Lading.css";
 
 import { useNavigate } from "react-router-dom";
 
-import { Button, Input } from "antd";
+import { Button, Input, Select, message } from "antd";
 import {
   UserOutlined,
   SmileOutlined,
@@ -20,9 +20,17 @@ import Headers from "../../Component/Headers/Headers";
 
 // 引入api接口
 import Login from "../../api/login";
+import Register from "../../api/register";
+
+const sexList = [
+  { value: "男", label: "男" },
+  { value: "女", label: "女" },
+  { value: "未知", label: "未知" },
+];
 
 class Ladings extends React.Component {
-  state = {
+  initState = {
+    nickname: "",
     username: "",
     password: "",
     password2: "",
@@ -30,25 +38,41 @@ class Ladings extends React.Component {
     register: false, // 是否点击了注册
     eyeStatus1: false, // 输入框眼镜的状态
     eyeStatus2: false,
+    sex: null, // 性别
+    telephone: "", // 手机号
   };
+
+  state = this.initState;
 
   // 调用登录接口
   postLogin = () => {
     Login(this.state.username, this.state.password)
       .then((res) => {
-        // console.log(res.data.data);
-        const { token, userId, avatar, username, grade } = res.data.data;
-        localStorage.setItem("username", username);
-        localStorage.setItem("avatar", avatar);
-        localStorage.setItem("grade", grade);
-
-        if (this.state.autoLogin) {
-          // 勾选了自动登录，保存唯一标识符
+        console.log(res.data);
+        if (res.data.code !== 200) {
+          this.setState({ username: "", password: "" });
+          message.error("账户或密码错误");
+        } else {
+          const { role, token } = res.data.data;
+          message.success("登录成功！");
+          localStorage.setItem("username", this.state.username);
+          localStorage.setItem(
+            "avatar",
+            "https://cdn.pixabay.com/photo/2023/10/16/07/55/animal-8318650_1280.jpg"
+          );
+          localStorage.setItem("grade", role.roleKey);
+          localStorage.setItem("userId", role.id);
           localStorage.setItem("token", token);
-          localStorage.setItem("userId", userId);
+
+          if (this.state.autoLogin) {
+            // 勾选了自动登录，保存唯一标识符
+            localStorage.setItem("autoLogin", true);
+          }
+          // 跳转到功能页面
+          setTimeout(() => {
+            this.props.navigate("/feature");
+          }, 500);
         }
-        // 跳转到功能页面
-        this.props.navigate("/feature");
       })
       .catch((err) => {
         console.log(err);
@@ -57,8 +81,35 @@ class Ladings extends React.Component {
 
   // 注册接口
   postRegister = () => {
-    console.log("注册接口");
-    this.setState({ register: false }); //注册成功后返回登录
+    console.log("注册接口", this.state);
+    const state = this.state;
+    const phoneRegex = /^[1-9]\d{10}$/; // 最简陋的手机号正则表达式
+    if (state.password !== state.password2) {
+      this.setState({ password: "", password2: "" });
+      message.error("两次密码不同,请重新输入");
+    } else if (!phoneRegex.test(state.telephone) && state.telephone !== "") {
+      this.setState({ telephone: "" });
+      message.error("手机号格式错误,请重新输入");
+    } else {
+      // 对sex进行处理
+      if (state.sex === "男") {
+        this.setState({ sex: 0 });
+      } else if (state.sex === "女") {
+        this.setState({ sex: 1 });
+      } else {
+        this.setState({ sex: 2 });
+      }
+      // 发起注册请求
+      Register(state).then((res) => {
+        if (res.data.code !== 200) {
+          message.error("很抱歉,用户名已存在");
+          this.setState({ username: "" });
+        } else {
+          message.success("注册成功！");
+          this.setState({ register: false }); //变成登录页
+        }
+      });
+    }
   };
 
   // 表单提交事件
@@ -99,6 +150,7 @@ class Ladings extends React.Component {
   };
 
   render() {
+    const state = this.state;
     return (
       <>
         <Headers />
@@ -108,8 +160,22 @@ class Ladings extends React.Component {
             <span className="author">数字马力培训大作业-数马冲锋队</span>
           </div>
           <form action="#" onSubmit={this.handleSubmit} className="form">
+            {this.state.register && (
+              <Input
+                className="lading-Input"
+                value={state.nickname}
+                prefix={<UserOutlined />}
+                type="text"
+                placeholder="昵称"
+                onChange={(e) => {
+                  this.setState({ nickname: e.target.value });
+                }}
+                required
+              />
+            )}
             <Input
               className="lading-Input"
+              value={state.username}
               prefix={<UserOutlined />}
               type="text"
               placeholder="用户名"
@@ -130,6 +196,7 @@ class Ladings extends React.Component {
               }
               type={this.state.eyeStatus1 ? "text" : "password"}
               placeholder="密码"
+              value={state.password}
               onChange={this.getPassWord}
               required
             />
@@ -150,12 +217,31 @@ class Ladings extends React.Component {
                   type={this.state.eyeStatus2 ? "text" : "password"}
                   placeholder="确认密码"
                   onChange={this.getPassWord2}
+                  value={state.password2}
                   required
+                />
+                <Input
+                  className="lading-Input"
+                  type="number"
+                  placeholder="手机号(可空)"
+                  value={state.telephone}
+                  onChange={(e) => {
+                    this.setState({ ...this.state, telephone: e.target.value });
+                  }}
+                />
+                <Select
+                  required
+                  placeholder="请选择性别"
+                  className="lading-Input"
+                  options={sexList}
+                  onChange={(value, option) => {
+                    this.setState({ ...this.state, sex: value });
+                  }}
                 />
                 <span
                   className="toRegister"
                   onClick={() => {
-                    this.setState({ register: false });
+                    this.setState({ ...this.initState, register: false });
                   }}
                 >
                   不注册了？ 返回登录~
@@ -179,7 +265,7 @@ class Ladings extends React.Component {
                 <span
                   className="toRegister"
                   onClick={() => {
-                    this.setState({ register: true });
+                    this.setState({ ...this.initState, register: true });
                   }}
                 >
                   还没有账户？ 快去注册~

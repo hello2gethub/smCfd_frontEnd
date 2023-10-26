@@ -1,13 +1,18 @@
 import { myAxios } from "../utils/myAxios";
 
-export default function Login(username, password) {
+export default function Register(obj) {
+  console.log(obj);
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: "http://cn-fz-plc-1.openfrp.top:59834/user/login",
+      url: "http://cn-fz-plc-1.openfrp.top:59834/user/register",
       data: {
-        userName: username,
-        password: password,
+        nickName: obj.nickname,
+        userName: obj.username,
+        password1: obj.password,
+        password2: obj.password2,
+        phonenumber: obj.telephone,
+        sex: obj.sex,
       },
     })
       .then((res) => {

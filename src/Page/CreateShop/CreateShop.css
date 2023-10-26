@@ -133,6 +133,10 @@
 .w .box3 .amount {
   width: 200px;
 }
+.w .delNode {
+  font-size: 18px;
+  transform: translateY(14px);
+}
 
 .w .box3 .addType {
   margin-top: 50px;

@@ -3,10 +3,10 @@ import { myAxios } from "../utils/myAxios";
 export default function getShopList(category, currentPage, pageSize) {
   return new Promise((resolve, reject) => {
     myAxios({
-      method: "GET",
-      url: "/json/shopList.json",
+      method: "POST",
+      url: "http://cn-fz-plc-1.openfrp.top:55068/product/proList",
       data: {
-        category: category,
+        status: category,
         currentPage: currentPage,
         pageSize: pageSize,
       },

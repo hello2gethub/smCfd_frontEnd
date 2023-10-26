@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   Select,
@@ -11,7 +11,7 @@ import {
   InputNumber,
 } from "antd";
 import moment from "moment";
-import { LeftOutlined } from "@ant-design/icons";
+import { LeftOutlined, DeleteOutlined } from "@ant-design/icons";
 import Headers from "../../Component/Headers/Headers";
 import Footers from "../../Component/Footers/Footers";
 
@@ -42,6 +42,7 @@ const props = {
 
 export default function CreateShop() {
   const navigate = useNavigate();
+  const priceRef = useRef(null);
 
   // 初始化form所有数据
   const initState = {
@@ -113,10 +114,102 @@ export default function CreateShop() {
     formName: Object.keys(initState.inputObj),
   });
 
+  //删除价格类型节点
+  const delNode = () => {
+    const node = priceRef.current;
+    const lastNode = node.lastChild; // 获取最后一个节点删除
+    if (lastNode) {
+      node.removeChild(lastNode);
+    }
+  };
+
+  // 插入新的节点
+  const addNode = () => {
+    const container = document.createElement("div");
+    container.className = "clearfix";
+
+    // 创建黄金会员价格类型部分
+    const li1 = document.createElement("li");
+    const div1 = document.createElement("div");
+    div1.className = "huangjing";
+    const h3_1 = document.createElement("h3");
+    h3_1.innerHTML = `<i>*</i>黄金会员价格类型`;
+    const select = document.createElement("select");
+    select.name = state.formName[9];
+    select.value = state.inputObj.priceClass;
+    select.style.width = "300px";
+    select.placeholder = "请选择";
+    select.addEventListener("change", (event) => {
+      handleInputChange(state.formName[9], event.target.value);
+    });
+    const option1 = document.createElement("option");
+    option1.value = "纯积分";
+    option1.label = "纯积分";
+    const option2 = document.createElement("option");
+    option2.value = "积分加钱";
+    option2.label = "积分加钱";
+    const option3 = document.createElement("option");
+    option3.value = "现金购买";
+    option3.label = "现金购买";
+    select.appendChild(option1);
+    select.appendChild(option2);
+    select.appendChild(option3);
+    div1.appendChild(h3_1);
+    div1.appendChild(select);
+    li1.appendChild(div1);
+    container.appendChild(li1);
+
+    // 创建积分数量部分
+    const li2 = document.createElement("li");
+    const h3_2 = document.createElement("h3");
+    h3_2.innerHTML = `<i>*</i>积分数量`;
+    const inputNumber1 = document.createElement("input");
+    inputNumber1.name = state.formName[10];
+    inputNumber1.value = state.inputObj.points;
+    inputNumber1.type = "number";
+    inputNumber1.min = "1";
+    inputNumber1.max = "100000";
+    inputNumber1.placeholder = "请输入";
+    inputNumber1.addEventListener("input", (event) => {
+      handleInputChange(state.formName[10], event.target.value);
+    });
+    li2.appendChild(h3_2);
+    li2.appendChild(inputNumber1);
+    container.appendChild(li2);
+
+    // 创建现金价格部分
+    const li3 = document.createElement("li");
+    const h3_3 = document.createElement("h3");
+    h3_3.innerHTML = `<i>*</i>现金价格`;
+    const inputNumber2 = document.createElement("input");
+    inputNumber2.name = state.formName[11];
+    inputNumber2.value = state.inputObj.price;
+    inputNumber2.type = "number";
+    inputNumber2.min = "1";
+    inputNumber2.max = "100000";
+    inputNumber2.placeholder = "请输入";
+    inputNumber2.addEventListener("input", (event) => {
+      handleInputChange(state.formName[11], event.target.value);
+    });
+    li3.appendChild(h3_3);
+    li3.appendChild(inputNumber2);
+    container.appendChild(li3);
+
+    // 创建删除按钮
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "delNode";
+    deleteButton.innerHTML = `Delete`;
+    deleteButton.addEventListener("click", delNode);
+    container.appendChild(deleteButton);
+
+    priceRef.current.appendChild(container);
+  };
+
+  /*----------------    事件处理    ------------------*/
   // 提交表单
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("提交表单");
+    alert("提交表单");
   };
 
   // 重置表单
@@ -370,72 +463,75 @@ export default function CreateShop() {
 
         {/* 会员的相关设置 start */}
         <div className="box box3">
-          <ul className="clearfix">
-            {/* 黄金会员价格类型 */}
-            <li>
-              <div className="huangjing">
-                <h3>
-                  <i>*</i>黄金会员价格类型
-                </h3>
-                <Select
-                  name={state.formName[9]}
-                  value={state.inputObj.priceClass}
-                  style={{ width: 300 }}
-                  placeholder="请选择"
-                  onChange={(value, option) =>
-                    handleInputChange(state.formName[9], value)
-                  }
-                  required
-                  options={[
-                    {
-                      value: "纯积分",
-                      label: "纯积分",
-                    },
-                    {
-                      value: "积分加钱",
-                      label: "积分加钱",
-                    },
-                    {
-                      value: "现金购买",
-                      label: "现金购买",
-                    },
-                  ]}
-                />
-              </div>
-            </li>
+          <div ref={priceRef}>
+            <ul className="clearfix">
+              {/* 黄金会员价格类型 */}
+              <li>
+                <div className="huangjing">
+                  <h3>
+                    <i>*</i>黄金会员价格类型
+                  </h3>
+                  <Select
+                    name={state.formName[9]}
+                    value={state.inputObj.priceClass}
+                    style={{ width: 300 }}
+                    placeholder="请选择"
+                    onChange={(value, option) =>
+                      handleInputChange(state.formName[9], value)
+                    }
+                    required
+                    options={[
+                      {
+                        value: "纯积分",
+                        label: "纯积分",
+                      },
+                      {
+                        value: "积分加钱",
+                        label: "积分加钱",
+                      },
+                      {
+                        value: "现金购买",
+                        label: "现金购买",
+                      },
+                    ]}
+                  />
+                </div>
+              </li>
 
-            <li>
-              <h3>
-                <i>*</i>积分数量
-              </h3>
-              <InputNumber
-                name={state.formName[10]}
-                value={state.inputObj.points}
-                min={1}
-                max={100000}
-                placeholder="请输入"
-                onChange={(e) => handleInputChange(state.formName[10], e)}
-                className="amount"
-                required
-              />
-            </li>
-            <li>
-              <h3>
-                <i>*</i>现金价格
-              </h3>
-              <InputNumber
-                name={state.formName[11]}
-                value={state.inputObj.price}
-                min={1}
-                max={100000}
-                placeholder="请输入"
-                onChange={(e) => handleInputChange(state.formName[11], e)}
-                className="amount"
-                required
-              />
-            </li>
-          </ul>
-          <div className="addType">
+              <li>
+                <h3>
+                  <i>*</i>积分数量
+                </h3>
+                <InputNumber
+                  name={state.formName[10]}
+                  value={state.inputObj.points}
+                  min={1}
+                  max={100000}
+                  placeholder="请输入"
+                  onChange={(e) => handleInputChange(state.formName[10], e)}
+                  className="amount"
+                  required
+                />
+              </li>
+              <li>
+                <h3>
+                  <i>*</i>现金价格
+                </h3>
+                <InputNumber
+                  name={state.formName[11]}
+                  value={state.inputObj.price}
+                  min={1}
+                  max={100000}
+                  placeholder="请输入"
+                  onChange={(e) => handleInputChange(state.formName[11], e)}
+                  className="amount"
+                  required
+                />
+              </li>
+              <DeleteOutlined className="delNode" onClick={delNode} />
+            </ul>
+          </div>
+          <div className="addType" onClick={addNode}>
             <em>+</em>添加一行价格类型
           </div>
         </div>
