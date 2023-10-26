@@ -12,20 +12,26 @@ import CreateShop from "./Page/CreateShop/CreateShop"; // 创建商品页面
 import ShopDetail from "./Page/ShopDetail/ShopDetail"; // 商品详情页面
 import { Loading } from "./utils/myAxios";
 
+import CalcRate from "./utils/ScreenDraw";
+
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route exact path="/" element={<Index />} />
-          <Route path="/lading" element={<Lading />} />
-          <Route path="/feature" element={<Feature />} />
-          <Route path="/createShop" element={<CreateShop />} />
-          <Route path="/shopDetail" element={<ShopDetail />} />
-        </Routes>
-      </Router>
-      <Loading />
-    </div>
+    <>
+      <CalcRate>
+        <div className="App">
+          <Router>
+            <Routes>
+              <Route exact path="/" element={<Index />} />
+              <Route path="/lading" element={<Lading />} />
+              <Route path="/feature" element={<Feature />} />
+              <Route path="/createShop" element={<CreateShop />} />
+              <Route path="/shopDetail" element={<ShopDetail />} />
+            </Routes>
+          </Router>
+          <Loading />
+        </div>
+      </CalcRate>
+    </>
   );
 }
 

@@ -1,67 +1,45 @@
-// 屏幕适配 mixin 函数
-// scale 缩放实现 Vue版待修改（React生命周期哇哇哇啊啊啊啊啊）
+import React, { Component } from "react";
+import debounce from "lodash.debounce";
+import "./ScreenDraw.css";
 
-// * 默认缩放值
-const scale = {
-  width: "1",
-  height: "1",
-};
-
-// * 设计稿尺寸（px）
-const baseWidth = 1920;
-const baseHeight = 1080;
-
-// * 需保持的比例（默认1.77778）
-const baseProportion = parseFloat((baseWidth / baseHeight).toFixed(5));
-
-export default {
-  data() {
-    return {
-      // * 定时函数
-      drawTiming: null,
+export default class CalcRate extends Component {
+  constructor(p) {
+    super(p);
+    this.state = {
+      scale: this.getScale(),
     };
-  },
-  mounted() {
-    this.calcRate();
-    window.addEventListener("resize", this.resize);
-  },
-  beforeDestroy() {
-    window.removeEventListener("resize", this.resize);
-  },
-  methods: {
-    calcRate() {
-      const appRef = this.$refs["appRef"];
-      if (!appRef) return;
-      // 当前宽高比
-      const currentRate = parseFloat(
-        (window.innerWidth / window.innerHeight).toFixed(5)
-      );
-      if (appRef) {
-        if (currentRate > baseProportion) {
-          // 表示更宽
-          scale.width = (
-            (window.innerHeight * baseProportion) /
-            baseWidth
-          ).toFixed(5);
-          scale.height = (window.innerHeight / baseHeight).toFixed(5);
-          appRef.style.transform = `scale(${scale.width}, ${scale.height}) translate(-50%, -50%)`;
-        } else {
-          // 表示更高
-          scale.height = (
-            window.innerWidth /
-            baseProportion /
-            baseHeight
-          ).toFixed(5);
-          scale.width = (window.innerWidth / baseWidth).toFixed(5);
-          appRef.style.transform = `scale(${scale.width}, ${scale.height}) translate(-50%, -50%)`;
-        }
-      }
-    },
-    resize() {
-      clearTimeout(this.drawTiming);
-      this.drawTiming = setTimeout(() => {
-        this.calcRate();
-      }, 100);
-    },
-  },
-};
+  }
+  componentDidMount() {
+    window.addEventListener("resize", this.setScale);
+  } //得到呈现的屏幕宽高比
+  getScale = () => {
+    const { width = 1920, height = 931 } = this.props;
+    let ww = window.innerWidth / width;
+    let wh = window.innerHeight / height;
+    return ww < wh ? ww : wh;
+  };
+  setScale = debounce(() => {
+    let scale = this.getScale();
+    this.setState({ scale });
+  }, 500);
+  render() {
+    const { width = 1920, height = 931, children } = this.props;
+    const { scale } = this.state;
+    return (
+      <div
+        className={"scale-box"}
+        style={{
+          transform: `scale(${scale}) translate(-50%, -50%)`,
+          WebkitTransform: `scale(${scale}) translate(-50%, -50%)`,
+          width,
+          height,
+        }}
+      >
+        {children}
+      </div>
+    );
+  }
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.setScale);
+  }
+}
