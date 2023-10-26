@@ -3,9 +3,9 @@ import React from "react";
 
 // 引入ant 组件库中的日期选择器
 import { DatePicker, Select, Button, Input } from "antd";
+import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
-import moment from "moment";
 dayjs.extend(customParseFormat);
 
 /**

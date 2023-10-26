@@ -2,7 +2,8 @@ import "./ShopList.css";
 import React from "react";
 
 // 引入ant组件
-import { Button, Tabs, Table, Pagination } from "antd";
+import { Button, Tabs, Table, Pagination, Modal, message } from "antd";
+import copy from "copy-to-clipboard";
 // 引入icon图标
 import {
   RedoOutlined,
@@ -32,82 +33,6 @@ const tabList = [
   { key: "3", label: "已下线", children: "" },
 ];
 
-// 管理员的表头
-let tableTitle1 = [
-  {
-    title: "商品ID",
-    dataIndex: "shopId",
-    key: "shopId",
-    align: "center",
-    render: (text) => <span style={{ color: "#1677FF" }}>{text}</span>,
-  },
-  {
-    title: "商品名称",
-    dataIndex: "shopName",
-    key: "shopName",
-    align: "center",
-    render: (text) => (
-      <span>
-        {text}
-        <CopyTwoTone size="small" className="iconFont" />
-      </span>
-    ),
-  },
-  { title: "库存", dataIndex: "repertory", key: "repertory", align: "center" },
-  {
-    title: "开始时间",
-    dataIndex: "starTime",
-    key: "starTime",
-    align: "center",
-  },
-  { title: "结束时间", dataIndex: "endTime", key: "endTime", align: "center" },
-  {
-    title: "商品状态",
-    dataIndex: "shopStatus",
-    key: "shopStatus",
-    align: "center",
-  },
-  {
-    title: "管理人",
-    dataIndex: "agent",
-    key: "agent",
-    align: "center",
-    render: (text) => (
-      <span>
-        {text}
-        <CopyTwoTone size="small" className="iconFont" />
-      </span>
-    ),
-  },
-  {
-    title: "操作",
-    dataIndex: "control",
-    key: "control",
-    align: "center",
-    render: (text) => (
-      <Button
-        style={
-          text === "上线"
-            ? {
-                width: "80px",
-                height: "30px",
-                borderColor: "#1677FF",
-                color: "#1677FF",
-              }
-            : {
-                width: "80px",
-                height: "30px",
-                borderColor: "red",
-                color: "red",
-              }
-        }
-      >
-        {text}
-      </Button>
-    ),
-  }, // 代理商没有这个字段
-];
-
 class ShopLists extends React.Component {
   state = {
     activeTab: "1", // 当前的tabs
@@ -120,15 +45,138 @@ class ShopLists extends React.Component {
       total: 0, // 总数据条数
     },
     selectedRowKeys: [], //选择表格行的数量
+    showBox: false, // 二次确认框是否显示
   };
 
-  // 相当于vue的onMonuted
-  componentDidMount() {
+  // 管理员的表头
+  tableTitle1 = [
+    {
+      title: "商品ID",
+      dataIndex: "shopId",
+      key: "shopId",
+      align: "center",
+      render: (text) => <span style={{ color: "#1677FF" }}>{text}</span>,
+    },
+    {
+      title: "商品名称",
+      dataIndex: "shopName",
+      key: "shopName",
+      align: "center",
+      render: (text) => (
+        <span>
+          {text}
+          <CopyTwoTone
+            size="small"
+            className="iconFont"
+            onClick={() => {
+              copy(text);
+              message.success("复制成功");
+            }}
+          />
+        </span>
+      ),
+    },
+    {
+      title: "库存",
+      dataIndex: "repertory",
+      key: "repertory",
+      align: "center",
+    },
+    {
+      title: "开始时间",
+      dataIndex: "starTime",
+      key: "starTime",
+      align: "center",
+    },
+    {
+      title: "结束时间",
+      dataIndex: "endTime",
+      key: "endTime",
+      align: "center",
+    },
+    {
+      title: "商品状态",
+      dataIndex: "shopStatus",
+      key: "shopStatus",
+      align: "center",
+    },
+    {
+      title: "管理人",
+      dataIndex: "agent",
+      key: "agent",
+      align: "center",
+      render: (text) => (
+        <span>
+          {text}
+          <CopyTwoTone
+            size="small"
+            className="iconFont"
+            onClick={() => {
+              copy(text);
+              message.success("复制成功");
+            }}
+          />
+        </span>
+      ),
+    },
+    {
+      title: "操作",
+      dataIndex: "control",
+      key: "control",
+      align: "center",
+      render: (text) => (
+        <>
+          <Button
+            onClick={() => {
+              this.setState({ showBox: true });
+            }} //开启二次确认框
+            style={
+              text === "上线"
+                ? {
+                    width: "80px",
+                    height: "30px",
+                    borderColor: "#1677FF",
+                    color: "#1677FF",
+                  }
+                : {
+                    width: "80px",
+                    height: "30px",
+                    borderColor: "red",
+                    color: "red",
+                  }
+            }
+          >
+            {text}
+          </Button>
+          <Modal
+            title="二次确认"
+            open={this.state.showBox}
+            onOk={() => {
+              this.putRequest(text);
+            }}
+            onCancel={() => {
+              this.setState({ showBox: false });
+            }}
+          >
+            <p>{`确认${text}吗？`}</p>
+          </Modal>
+        </>
+      ),
+    }, // 代理商没有这个字段
+  ];
+
+  // 相当于vue的onBeforeMonuted
+  componentWillMount() {
     this.getTableData(); //执行请求数据函数
     // 根据身份信息来选择表头
     const grade = localStorage.getItem("grade");
-    if (grade !== "admin") tableTitle1.pop();
-    this.setState({ tableTitle: tableTitle1 });
+    if (
+      grade !== "admin" &&
+      this.tableTitle1[this.tableTitle1.length - 1].title === "操作"
+    ) {
+      this.tableTitle1.pop();
+    }
+    this.setState({ tableTitle: this.tableTitle1 });
   }
 
   // 请求数据函数
@@ -160,6 +208,13 @@ class ShopLists extends React.Component {
       });
   };
 
+  // 用户点击了二次确认，发起上线或下线请求函数
+  putRequest = (text) => {
+    console.log(text);
+    this.setState({ showBox: false });
+    console.log(`发起${text}请求`);
+  };
+
   // tabs click事件
   // 每一次选择，页码都要重新置为1
   tabClick = (key) => {
@@ -180,7 +235,7 @@ class ShopLists extends React.Component {
         },
       },
       () => {
-        console.log(this.state);
+        // console.log(this.state);
         this.getTableData(); //重新获取数据
       }
     );
@@ -213,13 +268,22 @@ class ShopLists extends React.Component {
             onChange: this.selectChange,
           }
         : null; // 只有tabs为已上线或者已下线才有复选框
-    const hasSelected = selectedRowKeys.length > 0; // 用于判断是否显示条数
+    const hasSelected = selectedRowKeys.length > 0; // 用于判断是否显示选中条数
     return (
       <>
         <div className="shopList">
           <div className="shopList-title">
             <strong>商品列表</strong>
             <div>
+              {/* {this.props.grade !== "admin" && (
+                <Button
+                  type="primary"
+                  className="iconList"
+                  onClick={this.goToCreateShop}
+                >
+                  新建商品
+                </Button>
+              )} */}
               <Button
                 type="primary"
                 className="iconList"

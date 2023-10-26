@@ -28,7 +28,8 @@ class Ladings extends React.Component {
     password2: "",
     autoLogin: false, //自动登录复选框
     register: false, // 是否点击了注册
-    eyeStatus: false, // 输入框眼镜的状态
+    eyeStatus1: false, // 输入框眼镜的状态
+    eyeStatus2: false,
   };
 
   // 调用登录接口
@@ -89,8 +90,12 @@ class Ladings extends React.Component {
   };
 
   // 点击眼睛
-  changeEye = () => {
-    this.setState({ eyeStatus: !this.state.eyeStatus });
+  changeEye1 = () => {
+    this.setState({ eyeStatus1: !this.state.eyeStatus1 });
+  };
+
+  changeEye2 = () => {
+    this.setState({ eyeStatus2: !this.state.eyeStatus2 });
   };
 
   render() {
@@ -115,15 +120,15 @@ class Ladings extends React.Component {
               className="lading-Input"
               prefix={<SmileOutlined />}
               suffix={
-                <span onClick={this.changeEye}>
-                  {this.state.eyeStatus ? (
+                <span onClick={this.changeEye1}>
+                  {this.state.eyeStatus1 ? (
                     <EyeOutlined />
                   ) : (
                     <EyeInvisibleOutlined />
                   )}
                 </span>
               }
-              type={this.state.eyeStatus ? "text" : "password"}
+              type={this.state.eyeStatus1 ? "text" : "password"}
               placeholder="密码"
               onChange={this.getPassWord}
               required
@@ -134,15 +139,15 @@ class Ladings extends React.Component {
                   className="lading-Input"
                   prefix={<SafetyOutlined />}
                   suffix={
-                    <span onClick={this.changeEye}>
-                      {this.state.eyeStatus ? (
+                    <span onClick={this.changeEye2}>
+                      {this.state.eyeStatus2 ? (
                         <EyeOutlined />
                       ) : (
                         <EyeInvisibleOutlined />
                       )}
                     </span>
                   }
-                  type={this.state.eyeStatus ? "text" : "password"}
+                  type={this.state.eyeStatus2 ? "text" : "password"}
                   placeholder="确认密码"
                   onChange={this.getPassWord2}
                   required
@@ -159,12 +164,13 @@ class Ladings extends React.Component {
             ) : (
               <>
                 <div className="form-bottom">
-                  <label htmlFor="autoLogins" onClick={this.handleAutoLogin}>
+                  <label htmlFor="autoLogins">
                     <input
                       style={{ cursor: "pointer" }}
                       name="autoLogins"
                       type="checkbox"
                       checked={this.state.autoLogin}
+                      onChange={this.handleAutoLogin}
                     />
                     自动登录
                   </label>
