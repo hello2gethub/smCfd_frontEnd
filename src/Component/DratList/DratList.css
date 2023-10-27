@@ -1,0 +1,21 @@
+.dractList {
+  box-sizing: border-box;
+  margin-top: 30px;
+  background-color: #fff;
+  width: 1560px;
+  height: auto;
+  border-radius: 1%;
+  padding: 20px 10px;
+}
+
+.dractList .dractList-title {
+  padding: 20px 10px 10px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+}
+
+.dractList .pagination {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -12,6 +12,7 @@ import Footers from "../../Component/Footers/Footers"; // 底部
 // import SearchForm from "../../Component/SearchForm/SearchForm"; // 商品搜索栏
 import ShopList from "../../Component/ShopList/ShopList"; // 商品列表
 import DataShow from "../DataShow/DataShow";
+import DratList from "../../Component/DratList/DratList";
 
 // 导航栏相关
 import { AppstoreTwoTone, PlaySquareTwoTone } from "@ant-design/icons";
@@ -59,7 +60,7 @@ export default class Feature extends React.Component {
       { value: "已下线", label: "已下线" },
     ],
   };
-  state = { ...this.initState, ...this.initFormData, obj: {} };
+  state = { ...this.initState, ...this.initFormData, obj: {}, grade: null };
   /*--------------------  导航栏  ------------------- */
   menuClick = (e) => {
     // console.log(e);
@@ -72,14 +73,17 @@ export default class Feature extends React.Component {
   componentWillMount = () => {
     // 通过用户身份进行布局处理
     const grade = localStorage.getItem("grade");
-    console.log("grade--", grade);
+    this.setState({
+      ...this.state,
+      grade: grade,
+    });
     if (grade !== "admin" && menuList.length === 2) {
       menuList.pop();
     } else if (grade === "admin" && menuList.length === 1) {
       menuList.push({
         key: "dataShow",
         icon: <PlaySquareTwoTone />,
-        text: "数据大盘",
+        text: "数据可视化",
       });
     }
     this.setState({ menuListShow: menuList });
@@ -324,6 +328,7 @@ export default class Feature extends React.Component {
               </form>
               {/* 商品列表组件 */}
               <ShopList formData={obj} />
+              <DratList />
             </div>
           ) : (
             <DataShow />

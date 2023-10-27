@@ -394,7 +394,7 @@ class ShopLists extends React.Component {
   // 跳转到商品详情页
   goToShopDetail = (record) => {
     console.log("record---", record);
-    this.props.navigate(`/shopDetail`, { state: record.shopId });
+    this.props.navigate(`/shopDetail`, { state: { shopId: record.shopId } });
   };
 
   render() {

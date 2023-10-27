@@ -19,6 +19,8 @@ import "./CreateShop.css";
 import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import postCreateShop from "../../api/postCreateShop";
+
 dayjs.extend(customParseFormat);
 const { TextArea } = Input;
 // 图片获取
@@ -40,7 +42,7 @@ const props = {
   },
 };
 
-export default function CreateShop() {
+export default function CreateShop(props) {
   const navigate = useNavigate();
   const priceRef = useRef(null);
 
@@ -63,30 +65,30 @@ export default function CreateShop() {
     shopClass: [
       // 商品类型options
       {
-        value: "服装",
-        label: "服装",
+        value: "1",
+        label: "1",
       },
       {
-        value: "数码电子",
-        label: "数码电子",
+        value: "2",
+        label: "2",
       },
       {
-        value: "家电",
-        label: "家电",
+        value: "3",
+        label: "3",
       },
     ],
     shopCategory: [
       {
-        value: "西装",
-        label: "西装",
+        value: "1",
+        label: "1",
       },
       {
-        value: "汉服",
-        label: "汉服",
+        value: "2",
+        label: "2",
       },
       {
-        value: "睡衣",
-        label: "睡衣",
+        value: "3",
+        label: "3",
       },
     ],
     inputObj: {
@@ -107,12 +109,26 @@ export default function CreateShop() {
       starTime: "", // 上线时间
       endTime: "", // 结束时间
       addressPut: null, // 投放城市
+      shopStock: null, // 商品库存
     },
   };
   const [state, setState] = useState({
     ...initState,
     formName: Object.keys(initState.inputObj),
   });
+
+  // 创建商品接口
+  const apiCreateShop = () => {
+    let obj = state.inputObj;
+    obj["userId"] = localStorage.getItem("userId");
+    postCreateShop(obj)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log("创建商品出错", err);
+      });
+  };
 
   //删除价格类型节点
   const delNode = () => {
@@ -209,7 +225,9 @@ export default function CreateShop() {
   // 提交表单
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("提交表单");
+    apiCreateShop();
+    message.success("保存草稿成功！");
+    navigate("/feature");
   };
 
   // 重置表单
@@ -238,6 +256,7 @@ export default function CreateShop() {
 
   // 处理所有输入事件
   const handleInputChange = (name, value) => {
+    console.log(name, value);
     if (name === "starTime" || name === "endTime") {
       value = moment(value);
     }
@@ -303,6 +322,22 @@ export default function CreateShop() {
                   className="inPut"
                   required
                   maxLength={20}
+                />
+              </li>
+              <li>
+                <h3>
+                  <i>*</i>商品库存
+                </h3>
+                <Input
+                  name={state.formName[17]}
+                  value={state.inputObj.shopStock}
+                  type="number"
+                  onChange={(e) =>
+                    handleInputChange(state.formName[17], e.target.value)
+                  }
+                  placeholder="请输入商品库存"
+                  className="inPut"
+                  required
                 />
               </li>
               <li>
@@ -482,16 +517,16 @@ export default function CreateShop() {
                     required
                     options={[
                       {
-                        value: "纯积分",
-                        label: "纯积分",
+                        value: "1",
+                        label: "1",
                       },
                       {
-                        value: "积分加钱",
-                        label: "积分加钱",
+                        value: "2",
+                        label: "2",
                       },
                       {
-                        value: "现金购买",
-                        label: "现金购买",
+                        value: "3",
+                        label: "3",
                       },
                     ]}
                   />
