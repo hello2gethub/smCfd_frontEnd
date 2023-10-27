@@ -444,7 +444,9 @@ class ShopLists extends React.Component {
           <div
             className="batchCss"
             style={
-              activeTab !== "1" ? { display: "flex" } : { display: "none" }
+              this.state.grade === "admin" && activeTab !== "1"
+                ? { display: "flex" }
+                : { display: "none" }
             }
           >
             <span className="selectedNum">

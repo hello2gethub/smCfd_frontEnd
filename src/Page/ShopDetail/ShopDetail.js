@@ -229,7 +229,7 @@ export default function ShopDetail() {
       .then((res) => {
         if (res.data.code === 200) {
           message.success("提交审批成功");
-          navigate("./feature");
+          navigate("/feature");
         }
       })
       .catch((err) => {
