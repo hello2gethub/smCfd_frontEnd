@@ -277,27 +277,27 @@ class ShopLists extends React.Component {
   };
 
   // 更新上下线后表格的数据
-  updateStatus = (arr) => {
-    console.log(this.state.tableData);
-    let newData = Array.from(
-      { length: this.state.tableData.length },
-      () => ({})
-    ); // 创建空对象数组
-    for (let i = 0; i < arr.length; i++) {
-      this.state.tableData.forEach((item, index) => {
-        if (item.shopId === arr[i]) {
-          newData[index] = {
-            ...item,
-            shopStatus: item.shopStatus === "运行中" ? "已下线" : "运行中",
-            control: item.control === "上线" ? "下线" : "上线",
-          };
-        } else {
-          newData[index] = item;
-        }
-      });
-    }
-    this.setState({ ...this.state, tableData: newData });
-  };
+  // updateStatus = (arr) => {
+  //   console.log(this.state.tableData);
+  //   let newData = Array.from(
+  //     { length: this.state.tableData.length },
+  //     () => ({})
+  //   ); // 创建空对象数组
+  //   for (let i = 0; i < arr.length; i++) {
+  //     this.state.tableData.forEach((item, index) => {
+  //       if (item.shopId === arr[i]) {
+  //         newData[index] = {
+  //           ...item,
+  //           shopStatus: item.shopStatus === "运行中" ? "已下线" : "运行中",
+  //           control: item.control === "上线" ? "下线" : "上线",
+  //         };
+  //       } else {
+  //         newData[index] = item;
+  //       }
+  //     });
+  //   }
+  //   this.setState({ ...this.state, tableData: newData });
+  // };
 
   // 单次点击或多次点击：用户点击了二次确认，发起上线或下线请求函数
   putRequest = (status, arr) => {
@@ -315,7 +315,7 @@ class ShopLists extends React.Component {
       .then((res) => {
         if (res.data.code === 200) {
           message.success(`操作成功`);
-          this.updateStatus(arr);
+          this.tabClick("1"); // 回到全部重新渲染数据
         } else {
           message.error("没有相应权限");
         }

@@ -151,6 +151,15 @@ class DratLists extends React.Component {
           case "caretaker":
             newData[index]["agent"] = value;
             break;
+          case "status":
+            newData[index]["shopStatus"] =
+              value === 1
+                ? "未审批"
+                : value === 2
+                ? "审批中"
+                : value === 3
+                ? "已通过"
+                : "已驳回";
           default:
           // console.log(`商品列表不需要的数据--${key}: ${value}`);
         }
@@ -176,8 +185,12 @@ class DratLists extends React.Component {
         },
       },
       () => {
-        // console.log(this.state);
-        this.getTableData(); //重新获取数据
+        console.log(this.state.page);
+        if (this.state.grade !== "admin") {
+          this.getSlefDract();
+        } else {
+          this.getAdminDract();
+        }
       }
     );
   };

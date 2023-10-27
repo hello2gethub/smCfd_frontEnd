@@ -9,18 +9,22 @@ import {
   Divider,
   Input,
   Tabs,
+  message,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import "./ShopDetail.css";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 // 引入子组件
 import Footers from "../../Component/Footers/Footers";
 import Headers from "../../Component/Headers/Headers";
 import ShopPreview from "../../Component/ShopPreview/ShopPreview";
 
 // api
-import getShopDetails from "../../api/getShopDetails";
-import getDarctDetails from "../../api/getDarctDetails";
+import getShopDetails from "../../api/getShopDetails"; // 获取商品详情
+import getDarctDetails from "../../api/getDarctDetails"; // 获取草稿详情
+import submitApproval from "../../api/submitApproval"; // 发起审核
+import Approve from "../../api/Approve"; // 审批
+import changeShopStatus from "../../api/changeShopStatus"; // 上线or下线
 
 //输入框所需
 const { TextArea } = Input;
@@ -82,70 +86,73 @@ export default function ShopDetail() {
       cityH: "无限制",
       supplierName: "供应商",
       supplierTelephone: "16587659812",
-      tableData: [
-        {
-          key: "1",
-          name: "2",
-          age: "下线",
-          address: "1",
-        },
-        {
-          key: "2",
-          name: "2",
-          age: "下线",
-          address: "1",
-        },
-        {
-          key: "3",
-          name: "2",
-          age: "下线",
-          address: "1",
-        },
-      ],
     }, // 商品信息
     shopPreview: {}, // 预览信息
+    tableData: [
+      {
+        key: "1",
+        name: "2",
+        age: "下线",
+        address: "1",
+      },
+      {
+        key: "2",
+        name: "2",
+        age: "下线",
+        address: "1",
+      },
+      {
+        key: "3",
+        name: "2",
+        age: "下线",
+        address: "1",
+      },
+    ],
   };
   const [state, setState] = useState({ ...initState, grade: identity });
+
+  const navigate = useNavigate();
 
   // 三个生命周期
   useEffect(() => {
     // 处理接收到的后端数据
     const handleData = (data) => {
-      setState({
-        ...state,
-        custodian: data.proxyId, // 代理人
-        createMan: data.caretaker, //创建人
-        equityId: data.id, // 权益ID 后端没有，用商品id代替
-      });
+      // console.log("data", Object.prototype.toString.call(data));
+      setState((prevState) => ({
+        ...prevState,
+        custodian: data.id,
+        createMan: data.caretaker,
+        equityId: data.id,
+      }));
       let newData = {};
-      data.forEach(([key, value]) => {
+      Object.keys(data).forEach((key) => {
         switch (key) {
           case "name":
-            newData["shopName"] = value;
+            newData["shopName"] = data[key];
             break;
           case "image":
-            newData["shopImg1"] = value;
+            newData["shopImg1"] = data[key];
             break;
           case "description":
-            newData["msMsg"] = value;
+            newData["msMsg"] = data[key];
             break;
           case "details":
-            newData["fwb"] = value;
+            newData["fwb"] = data[key];
             break;
           case "category":
-            newData["shopClass"] = value;
+            newData["shopClass"] = data[key];
             break;
           case "startTime":
-            newData["starTime"] = value.slice(0, 10);
+            newData["starTime"] = data[key].slice(0, 10);
             break;
           case "endTime":
-            newData["updateTime"] = value.slice(0, 10);
+            newData["updateTime"] = data[key].slice(0, 10);
             break;
           case "status":
-            newData["shopStatus"] = value;
+            newData["shopStatus"] = data[key];
             break;
           case "exchangeLimit":
-            newData["dhxz"] = value;
+            newData["dhxz"] = data[key];
             break;
           default:
         }
@@ -156,10 +163,10 @@ export default function ShopDetail() {
       newData["cityH"] = "无限制";
       newData["supplierName"] = "供应商";
       newData["supplierTelephone"] = "16587659812";
-      setState({
-        ...state,
+      setState((prevState) => ({
+        ...prevState,
         shopDetails: newData,
-      });
+      }));
     };
 
     // 获取商品或草稿详情的数据
@@ -187,7 +194,7 @@ export default function ShopDetail() {
       }
     };
     getDetailsData();
-  }, [darctId, shopId, state]);
+  }, [darctId, shopId]);
   //提交按钮所需
 
   //编辑按钮
@@ -197,6 +204,7 @@ export default function ShopDetail() {
   };
   const redactOk = () => {
     setredact(false);
+    navigate("/createShop", { state: darctId });
   };
   const redactCancel = () => {
     setredact(false);
@@ -209,6 +217,16 @@ export default function ShopDetail() {
   };
   const auditOk = () => {
     setaudit(false);
+    submitApproval(darctId)
+      .then((res) => {
+        if (res.data.code === 200) {
+          message.success("提交审批成功");
+          navigate("./feature");
+        }
+      })
+      .catch((err) => {
+        console.log("提交审批失败", err);
+      });
   };
   const auditCancel = () => {
     setaudit(false);
@@ -221,6 +239,18 @@ export default function ShopDetail() {
   };
   const passOk = () => {
     setpass(false);
+    console.log("aa");
+    Approve(3, darctId)
+      .then((res) => {
+        console.log(res);
+        if (res.data.code === 200) {
+          message.success("审批成功");
+          navigate("./feature");
+        }
+      })
+      .catch((err) => {
+        console.log("审批通过失败", err);
+      });
   };
   const passCancel = () => {
     setpass(false);
@@ -233,6 +263,17 @@ export default function ShopDetail() {
   };
   const rejectOk = () => {
     setreject(false);
+    Approve(2, darctId)
+      .then((res) => {
+        console.log("审批驳回", res);
+        if (res.data.code === 200) {
+          message.success("操作成功");
+          navigate("/feature");
+        }
+      })
+      .catch((err) => {
+        console.log("审批驳回请求失败", err);
+      });
   };
   const rejectCancel = () => {
     setreject(false);
@@ -245,6 +286,16 @@ export default function ShopDetail() {
   };
   const submitOk = () => {
     setsubmit(false);
+    changeShopStatus(1, [shopId])
+      .then((res) => {
+        if (res.data.code === 200) {
+          message.success("上线成功");
+          navigate("/feature");
+        }
+      })
+      .catch((err) => {
+        console.log("上线失败", err);
+      });
   };
   const submitCancel = () => {
     setsubmit(false);
@@ -257,6 +308,16 @@ export default function ShopDetail() {
   };
   const withdrawOk = () => {
     setWithdraw(false);
+    changeShopStatus(2, [shopId])
+      .then((res) => {
+        if (res.data.code === 200) {
+          message.success("下线成功");
+          navigate("/feature");
+        }
+      })
+      .catch((err) => {
+        console.log("下线失败", err);
+      });
   };
   const withdrawCancel = () => {
     setWithdraw(false);
@@ -427,7 +488,7 @@ export default function ShopDetail() {
             <div className="custodian">
               <div className="custodian-item">
                 <div className="top-1">
-                  <strong>代理人: </strong>
+                  <strong>{shopId ? "商品Id" : "草稿Id"} :</strong>
                   <span className="small">{state.custodian}</span>
                 </div>
                 <div className="top-2">
@@ -536,7 +597,7 @@ export default function ShopDetail() {
                 <Divider className="tabulation">操作记录</Divider>
                 <Table
                   columns={columns}
-                  dataSource={shopDetails.tableData}
+                  dataSource={state.tableData}
                   size="middle"
                 />
               </div>

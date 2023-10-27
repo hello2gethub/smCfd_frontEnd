@@ -1,10 +1,10 @@
 import { myAxios } from "../utils/myAxios";
 
-export default function postCreateShop(obj) {
+export default function redactDarct(obj) {
   return new Promise((resolve, reject) => {
     myAxios({
-      method: "POST",
-      url: "http://cn-sc-plc-2.openfrp.top:57880/draft/createDraft",
+      method: "PUT",
+      url: "http://cn-sc-plc-2.openfrp.top:57880/draft/editDraft",
       data: {
         caretaker: obj.userId,
         cashPrice: obj.price,

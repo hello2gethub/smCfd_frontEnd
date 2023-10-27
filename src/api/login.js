@@ -4,7 +4,7 @@ export default function Login(username, password) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: "http://cn-bj-plc-2.openfrp.top:59354/user/login",
+      url: "http://cn-sc-plc-2.openfrp.top:57880/user/login",
       data: {
         userName: username,
         password: password,

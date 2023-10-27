@@ -16,10 +16,11 @@ import Headers from "../../Component/Headers/Headers";
 import Footers from "../../Component/Footers/Footers";
 
 import "./CreateShop.css";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import postCreateShop from "../../api/postCreateShop";
+import redactDarct from "../../api/redactDarct";
 
 dayjs.extend(customParseFormat);
 const { TextArea } = Input;
@@ -45,6 +46,8 @@ const props = {
 export default function CreateShop() {
   const navigate = useNavigate();
   const priceRef = useRef(null);
+  const location = useLocation();
+  const darctId = location.state; // 拿到草稿Id
 
   // 初始化form所有数据
   const initState = {
@@ -121,13 +124,22 @@ export default function CreateShop() {
   const apiCreateShop = () => {
     let obj = state.inputObj;
     obj["userId"] = localStorage.getItem("userId");
-    postCreateShop(obj)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log("创建商品出错", err);
+    if (darctId) {
+      obj["id"] = darctId;
+      redactDarct(obj).then((res) => {
+        console.log("编辑成功", res);
+        message.success("编辑草稿成功");
       });
+    } else {
+      postCreateShop(obj)
+        .then((res) => {
+          message.success("创建草稿成功");
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log("创建商品出错", err);
+        });
+    }
   };
 
   //删除价格类型节点
@@ -226,7 +238,6 @@ export default function CreateShop() {
   const handleSubmit = (e) => {
     e.preventDefault();
     apiCreateShop();
-    message.success("保存草稿成功！");
     navigate("/feature");
   };
 
