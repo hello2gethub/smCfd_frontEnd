@@ -5,7 +5,7 @@ export default function Register(obj) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: "http://cn-fz-plc-1.openfrp.top:59834/user/register",
+      url: "http://cn-bj-plc-2.openfrp.top:59354/user/register",
       data: {
         nickName: obj.nickname,
         userName: obj.username,

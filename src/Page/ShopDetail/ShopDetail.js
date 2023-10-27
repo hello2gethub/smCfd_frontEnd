@@ -18,6 +18,10 @@ import Footers from "../../Component/Footers/Footers";
 import Headers from "../../Component/Headers/Headers";
 import ShopPreview from "../../Component/ShopPreview/ShopPreview";
 
+// api
+import getShopDetails from "../../api/getShopDetails";
+import getDarctDetails from "../../api/getDarctDetails";
+
 //输入框所需
 const { TextArea } = Input;
 const onChange = (e) => {
@@ -52,12 +56,13 @@ const tabList = [
 
 export default function ShopDetail() {
   const location = useLocation();
-  const shopId = location.state; // 拿到商品Id
+  const shopId = location.state.shopId; // 拿到商品Id
+  const darctId = location.state.darctId; // 拿到草稿Id
   const identity = localStorage.getItem("grade"); // 获取身份
   const initState = {
     grade: "", // 身份
     activeTab: "1", // 用于切换预览与商品信息
-    custodian: "1812739", // 管理人Id
+    custodian: "1812739", // 代理人Id
     createMan: "1282891", // 创建人Id，
     equityId: "129387104981239", //权益Id
     shopStatus: "未知",
@@ -65,7 +70,6 @@ export default function ShopDetail() {
       shopName: "爱奇艺会员",
       fwb: "tip",
       dhxz: "1年",
-      showTime: "2022-05-18",
       qyId: "虚拟",
       shopClass: "个人护理",
       starTime: "2022-05-18",
@@ -74,8 +78,6 @@ export default function ShopDetail() {
       updateTime: "2022-05-18",
       shopImg1:
         "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
-      shopImg2:
-        "https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg",
       cityB: "无限制",
       cityH: "无限制",
       supplierName: "供应商",
@@ -83,21 +85,21 @@ export default function ShopDetail() {
       tableData: [
         {
           key: "1",
-          name: "123456",
+          name: "2",
           age: "下线",
-          address: "200-06-02",
+          address: "1",
         },
         {
           key: "2",
-          name: "Jim Green",
-          age: 42,
-          address: "London No. 1 Lake Park",
+          name: "2",
+          age: "下线",
+          address: "1",
         },
         {
           key: "3",
-          name: "Joe Black",
-          age: 32,
-          address: "Sydney No. 1 Lake Park",
+          name: "2",
+          age: "下线",
+          address: "1",
         },
       ],
     }, // 商品信息
@@ -105,7 +107,87 @@ export default function ShopDetail() {
   };
   const [state, setState] = useState({ ...initState, grade: identity });
 
-  useEffect(() => {}, []);
+  // 三个生命周期
+  useEffect(() => {
+    // 处理接收到的后端数据
+    const handleData = (data) => {
+      setState({
+        ...state,
+        custodian: data.proxyId, // 代理人
+        createMan: data.caretaker, //创建人
+        equityId: data.id, // 权益ID 后端没有，用商品id代替
+      });
+      let newData = {};
+      data.forEach(([key, value]) => {
+        switch (key) {
+          case "name":
+            newData["shopName"] = value;
+            break;
+          case "image":
+            newData["shopImg1"] = value;
+            break;
+          case "description":
+            newData["msMsg"] = value;
+            break;
+          case "details":
+            newData["fwb"] = value;
+            break;
+          case "category":
+            newData["shopClass"] = value;
+            break;
+          case "startTime":
+            newData["starTime"] = value.slice(0, 10);
+            break;
+          case "endTime":
+            newData["updateTime"] = value.slice(0, 10);
+            break;
+          case "status":
+            newData["shopStatus"] = value;
+            break;
+          case "exchangeLimit":
+            newData["dhxz"] = value;
+            break;
+          default:
+        }
+      });
+      // 没有数据的直接给假的。
+      newData["serveSave"] = "服务保障";
+      newData["cityB"] = "无限制";
+      newData["cityH"] = "无限制";
+      newData["supplierName"] = "供应商";
+      newData["supplierTelephone"] = "16587659812";
+      setState({
+        ...state,
+        shopDetails: newData,
+      });
+    };
+
+    // 获取商品或草稿详情的数据
+    const getDetailsData = () => {
+      if (darctId) {
+        // 获取草稿详情数据
+        getDarctDetails(darctId)
+          .then((res) => {
+            console.log("草稿详情", res);
+            handleData(res.data.data);
+          })
+          .catch((err) => {
+            console.log("请求草稿详情", err);
+          });
+      } else if (shopId) {
+        // 获取商品Id数据
+        getShopDetails(shopId)
+          .then((res) => {
+            console.log("商品详情", res);
+            handleData(res.data.data);
+          })
+          .catch((err) => {
+            console.log("请求商品详情出错", err);
+          });
+      }
+    };
+    getDetailsData();
+  }, [darctId, shopId, state]);
   //提交按钮所需
 
   //编辑按钮
@@ -198,7 +280,7 @@ export default function ShopDetail() {
 
               {/* 按钮 */}
               <ul className="button">
-                {grade !== "admin" ? (
+                {grade !== "admin" && darctId && (
                   <>
                     {/* 编辑  下线状态使用 */}
                     <li>
@@ -242,7 +324,8 @@ export default function ShopDetail() {
                       </Modal>
                     </li>
                   </>
-                ) : (
+                )}
+                {darctId && grade === "admin" && (
                   <>
                     {/* 审核通过 仅超级管理员可见 */}
                     <li>
@@ -296,6 +379,10 @@ export default function ShopDetail() {
                         />
                       </Modal>
                     </li>
+                  </>
+                )}
+                {shopId && grade === "admin" && (
+                  <>
                     {/* 上线 未审批禁止使用 */}
                     <li>
                       <Button
@@ -340,7 +427,7 @@ export default function ShopDetail() {
             <div className="custodian">
               <div className="custodian-item">
                 <div className="top-1">
-                  <strong>管理人: </strong>
+                  <strong>代理人: </strong>
                   <span className="small">{state.custodian}</span>
                 </div>
                 <div className="top-2">
@@ -398,13 +485,10 @@ export default function ShopDetail() {
                       兑换限制:<span>{shopDetails.dhxz}</span>
                     </li>
                     <li>
-                      创建时间:<span>{shopDetails.updateTime}</span>
+                      创建时间:<span>{shopDetails.starTime}</span>
                     </li>
                     <li>
-                      修改时间:<span>{shopDetails.updateTime}</span>
-                    </li>
-                    <li>
-                      展示时间:<span>{shopDetails.showTime}</span>
+                      结束时间:<span>{shopDetails.updateTime}</span>
                     </li>
                   </ul>
 
@@ -421,7 +505,6 @@ export default function ShopDetail() {
                     }}
                   >
                     <Image width={200} src={shopDetails.shopImg1} />
-                    <Image width={200} src={shopDetails.shopImg2} />
                   </Image.PreviewGroup>
 
                   <div>

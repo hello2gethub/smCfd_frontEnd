@@ -4,7 +4,7 @@ export default function getShopList(obj) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: "http://cn-fz-plc-1.openfrp.top:55068/product/proList",
+      url: "http://cn-sc-plc-1.openfrp.top:41303/product/proList",
       data: {
         caretaker: obj.custodian,
         currentPage: obj.currentPage,

@@ -42,7 +42,7 @@ const props = {
   },
 };
 
-export default function CreateShop(props) {
+export default function CreateShop() {
   const navigate = useNavigate();
   const priceRef = useRef(null);
 

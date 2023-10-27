@@ -1,13 +1,10 @@
 import { myAxios } from "../utils/myAxios";
 
-export default function changeShopStatus(status, ids) {
-  console.log("status", status);
-  console.log("ids", ids);
+export default function getShopDetails(shopId) {
   return new Promise((resolve, reject) => {
     myAxios({
-      method: "POST",
-      url: `http://cn-sc-plc-1.openfrp.top:41303/product/editStatus/${status}`,
-      data: ids,
+      method: "GET",
+      url: `http://cn-sc-plc-1.openfrp.top:41303/product/productDetails/${shopId}`,
     })
       .then((res) => {
         if (res.status === 200) {
