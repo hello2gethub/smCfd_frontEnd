@@ -1,4 +1,4 @@
-.searchShop {
+/* .searchShop {
   position: relative;
   width: 1560px;
   height: 200px;
@@ -8,7 +8,7 @@
   grid-gap: 0 20px;
   grid-template-columns: repeat(4, 375px);
   grid-template-rows: repeat(2, 100px);
-  /* grid-gap: 20px; */
+  /* grid-gap: 20px; 
   justify-items: center;
   align-items: center;
 }
@@ -25,4 +25,4 @@
 
 .searchShop .searchBtn {
   margin-left: 30px;
-}
+} */

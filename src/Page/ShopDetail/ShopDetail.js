@@ -53,7 +53,9 @@ const tabList = [
 export default function ShopDetail() {
   const location = useLocation();
   const shopId = location.state; // 拿到商品Id
+  const identity = localStorage.getItem("grade"); // 获取身份
   const initState = {
+    grade: "", // 身份
     activeTab: "1", // 用于切换预览与商品信息
     custodian: "1812739", // 管理人Id
     createMan: "1282891", // 创建人Id，
@@ -101,11 +103,9 @@ export default function ShopDetail() {
     }, // 商品信息
     shopPreview: {}, // 预览信息
   };
-  const [state, setState] = useState({ ...initState });
+  const [state, setState] = useState({ ...initState, grade: identity });
 
-  useEffect(() => {
-    console.log(shopId);
-  }, [shopId]);
+  useEffect(() => {}, []);
   //提交按钮所需
 
   //编辑按钮
@@ -182,6 +182,7 @@ export default function ShopDetail() {
 
   //基础信息和商品预览转换
   const shopDetails = state.shopDetails;
+  const grade = state.grade;
   return (
     <>
       <Headers />
@@ -197,135 +198,142 @@ export default function ShopDetail() {
 
               {/* 按钮 */}
               <ul className="button">
-                {/* 编辑  下线状态使用 */}
-                <li>
-                  <Button type="primary" onClick={redact}>
-                    编辑
-                  </Button>
-                  <Modal
-                    title="编辑"
-                    open={redact1}
-                    onOk={redactOk}
-                    onCancel={redactCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否进行编辑</p>
-                    <p>确认，将会跳转到信息编辑页面</p>
-                  </Modal>
-                </li>
-                {/* 发起审核 进入审核不可使用 */}
-                <li>
-                  <Button type="primary" onClick={audit}>
-                    发起审核
-                  </Button>
-                  <Modal
-                    title="发起审核"
-                    open={audit1}
-                    onOk={auditOk}
-                    onCancel={auditCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否发起审核</p>
-                    <h4 style={{ marginTop: "10px" }}>备注：</h4>
-                    <TextArea
-                      showCount
-                      maxLength={100}
-                      style={{
-                        height: 50,
-                        resize: "none",
-                        marginBottom: "10px",
-                      }}
-                      onChange={onChange}
-                      placeholder="备注"
-                    />
-                  </Modal>
-                </li>
-                {/* 审核通过 仅超级管理员可见 */}
-                <li>
-                  <Button type="primary" onClick={pass}>
-                    审核通过
-                  </Button>
-                  <Modal
-                    title="审核通过"
-                    open={pass1}
-                    onOk={passOk}
-                    onCancel={passCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否审核通过</p>
-                    <h4 style={{ marginTop: "10px" }}>备注：</h4>
-                    <TextArea
-                      showCount
-                      maxLength={100}
-                      style={{
-                        height: 50,
-                        resize: "none",
-                        marginBottom: "10px",
-                      }}
-                      onChange={onChange}
-                      placeholder="备注"
-                    />
-                  </Modal>
-                </li>
-                {/* 审核驳回 仅超级管理员可见 */}
-                <li>
-                  <Button type="primary" onClick={reject}>
-                    审核驳回
-                  </Button>
-                  <Modal
-                    title="审核驳回"
-                    open={reject1}
-                    onOk={rejectOk}
-                    onCancel={rejectCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否审核驳回</p>
-                    <h4 style={{ marginTop: "10px" }}>备注：</h4>
-                    <TextArea
-                      showCount
-                      maxLength={100}
-                      style={{
-                        height: 50,
-                        resize: "none",
-                        marginBottom: "10px",
-                      }}
-                      onChange={onChange}
-                      placeholder="备注"
-                    />
-                  </Modal>
-                </li>
-                {/* 上线 未审批禁止使用 */}
-                <li>
-                  <Button
-                    type="primary"
-                    onClick={submit}
-                    style={{ backgroundColor: "#ff5252" }}
-                  >
-                    上线
-                  </Button>
-                  <Modal
-                    title="上线"
-                    open={submit1}
-                    onOk={submitOk}
-                    onCancel={submitCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否上线</p>
-                  </Modal>
-                </li>
-                {/* 下线 未上线不展示 */}
-                <li>
-                  <Button
-                    type="primary"
-                    onClick={withdraw}
-                    style={{ backgroundColor: "#ff5252" }}
-                  >
-                    下线
-                  </Button>
-                  <Modal
-                    title="下线"
-                    open={withdraw1}
-                    onOk={withdrawOk}
-                    onCancel={withdrawCancel}
-                  >
-                    <p style={{ color: "#ff5252" }}>请确认是否下线</p>
-                  </Modal>
-                </li>
+                {grade !== "admin" ? (
+                  <>
+                    {/* 编辑  下线状态使用 */}
+                    <li>
+                      <Button type="primary" onClick={redact}>
+                        编辑
+                      </Button>
+                      <Modal
+                        title="编辑"
+                        open={redact1}
+                        onOk={redactOk}
+                        onCancel={redactCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否进行编辑</p>
+                        <p>确认，将会跳转到信息编辑页面</p>
+                      </Modal>
+                    </li>
+                    {/* 发起审核 进入审核不可使用 */}
+                    <li>
+                      <Button type="primary" onClick={audit}>
+                        发起审核
+                      </Button>
+                      <Modal
+                        title="发起审核"
+                        open={audit1}
+                        onOk={auditOk}
+                        onCancel={auditCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否发起审核</p>
+                        <h4 style={{ marginTop: "10px" }}>备注：</h4>
+                        <TextArea
+                          showCount
+                          maxLength={100}
+                          style={{
+                            height: 50,
+                            resize: "none",
+                            marginBottom: "10px",
+                          }}
+                          onChange={onChange}
+                          placeholder="备注"
+                        />
+                      </Modal>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    {/* 审核通过 仅超级管理员可见 */}
+                    <li>
+                      <Button type="primary" onClick={pass}>
+                        审核通过
+                      </Button>
+                      <Modal
+                        title="审核通过"
+                        open={pass1}
+                        onOk={passOk}
+                        onCancel={passCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否审核通过</p>
+                        <h4 style={{ marginTop: "10px" }}>备注：</h4>
+                        <TextArea
+                          showCount
+                          maxLength={100}
+                          style={{
+                            height: 50,
+                            resize: "none",
+                            marginBottom: "10px",
+                          }}
+                          onChange={onChange}
+                          placeholder="备注"
+                        />
+                      </Modal>
+                    </li>
+                    {/* 审核驳回 仅超级管理员可见 */}
+                    <li>
+                      <Button type="primary" onClick={reject}>
+                        审核驳回
+                      </Button>
+                      <Modal
+                        title="审核驳回"
+                        open={reject1}
+                        onOk={rejectOk}
+                        onCancel={rejectCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否审核驳回</p>
+                        <h4 style={{ marginTop: "10px" }}>备注：</h4>
+                        <TextArea
+                          showCount
+                          maxLength={100}
+                          style={{
+                            height: 50,
+                            resize: "none",
+                            marginBottom: "10px",
+                          }}
+                          onChange={onChange}
+                          placeholder="备注"
+                        />
+                      </Modal>
+                    </li>
+                    {/* 上线 未审批禁止使用 */}
+                    <li>
+                      <Button
+                        type="primary"
+                        onClick={submit}
+                        style={{ backgroundColor: "#ff5252" }}
+                      >
+                        上线
+                      </Button>
+                      <Modal
+                        title="上线"
+                        open={submit1}
+                        onOk={submitOk}
+                        onCancel={submitCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否上线</p>
+                      </Modal>
+                    </li>
+                    {/* 下线 未上线不展示 */}
+                    <li>
+                      <Button
+                        type="primary"
+                        onClick={withdraw}
+                        style={{ backgroundColor: "#ff5252" }}
+                      >
+                        下线
+                      </Button>
+                      <Modal
+                        title="下线"
+                        open={withdraw1}
+                        onOk={withdrawOk}
+                        onCancel={withdrawCancel}
+                      >
+                        <p style={{ color: "#ff5252" }}>请确认是否下线</p>
+                      </Modal>
+                    </li>
+                  </>
+                )}
               </ul>
             </div>
 

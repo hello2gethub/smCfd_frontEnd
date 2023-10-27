@@ -1,5 +1,5 @@
 import "./ShopList.css";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // 引入ant组件
 import { Button, Tabs, Table, Pagination, Modal, message } from "antd";
@@ -11,10 +11,12 @@ import {
   SettingOutlined,
   CopyTwoTone,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router";
 
 // 引入getShopList API
 import getShopList from "../../api/getShopList";
-import { useNavigate } from "react-router";
+import changeShopStatus from "../../api/changeShopStatus";
+
 /**
  * 处理不同身份显示不同的商品列表
  * 不同身份应该显示不同的表头和数据以及不同的按钮
@@ -47,6 +49,7 @@ class ShopLists extends React.Component {
     selectedRowKeys: [], //选择表格行的数量
     showBox: false, // 二次确认框是否显示
     grade: null,
+    record: null, // 操作的行
   };
 
   // 管理员的表头
@@ -127,12 +130,13 @@ class ShopLists extends React.Component {
       dataIndex: "control",
       key: "control",
       align: "center",
-      render: (text) => (
+      render: (text, record) => (
         <>
           <Button
             onClick={(e) => {
+              console.log("record1", record);
+              this.setState({ showBox: true, record: record });
               e.stopPropagation(); //阻止事件冒泡
-              this.setState({ showBox: true });
             }} //开启二次确认框
             style={
               text === "上线"
@@ -186,17 +190,41 @@ class ShopLists extends React.Component {
     this.setState({ tableTitle: this.tableTitle1 });
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.obj !== this.props.obj) {
+      console.log(this.props.obj);
+      this.getTableData(this.props.obj);
+    }
+  }
+
   // 请求数据函数
-  getTableData = () => {
+  getTableData = (formData) => {
     const { currentPage, pageSize } = this.state.page;
     const category =
-      this.state.activeTab === "1" ? 0 : this.state.activeTab === "2" ? 1 : 2;
-    getShopList(category, currentPage, pageSize)
+      this.state.activeTab === "1" ? 0 : this.state.activeTab === "2" ? 1 : 2; // 配合后端修改一下类别
+    let obj = {};
+    if (formData) {
+      obj = {
+        category: category,
+        currentPage: currentPage,
+        pageSize: pageSize,
+        ...formData,
+      };
+    } else {
+      obj = {
+        category: category,
+        currentPage: currentPage,
+        pageSize: pageSize,
+      };
+    }
+    // console.log("obj", obj);
+    getShopList(obj)
       .then((res) => {
-        console.log("商品列表--", res.data.data);
+        // console.log("商品列表--", res.data.data);
+        const total = res.data.data.total; // 数据总条数
         let data = res.data.data.records.slice(0, pageSize); // 数据切片只展示相应条数
         // 处理后端返回的数据,跟自己的对上
-        let newData = [];
+        let newData = Array.from({ length: data.length }, () => ({})); // 创建空对象数组
         data.forEach((item, index) => {
           // 保险一下，怕自动转化为string，用== eslint就警告了O.O
           if (parseInt(item.status) === 1) {
@@ -229,11 +257,10 @@ class ShopLists extends React.Component {
                 newData[index]["agent"] = value;
                 break;
               default:
-                console.log(`商品列表不需要的数据--${key}: ${value}`);
+              // console.log(`商品列表不需要的数据--${key}: ${value}`);
             }
           });
         });
-        const total = newData.length; // 数据总条数
         this.setState({
           tableData: newData,
           page: {
@@ -248,19 +275,60 @@ class ShopLists extends React.Component {
       });
   };
 
-  // 用户点击了二次确认，发起上线或下线请求函数
+  // 更新上下线后表格的数据
+  updateStatus = (arr) => {
+    console.log(this.state.tableData);
+    let newData = Array.from(
+      { length: this.state.tableData.length },
+      () => ({})
+    ); // 创建空对象数组
+    for (let i = 0; i < arr.length; i++) {
+      this.state.tableData.forEach((item, index) => {
+        if (item.shopId === arr[i]) {
+          newData[index] = {
+            ...item,
+            shopStatus: item.shopStatus === "运行中" ? "已下线" : "运行中",
+            control: item.control === "上线" ? "下线" : "上线",
+          };
+        } else {
+          newData[index] = item;
+        }
+      });
+    }
+    this.setState({ ...this.state, tableData: newData });
+  };
+
+  // 单次点击：用户点击了二次确认，发起上线或下线请求函数
   putRequest = () => {
-    this.setState({ showBox: false });
-    console.log(`发起请求`);
+    const { record } = this.state;
+    this.setState({ showBox: false, record: null });
+    const status = record.control === "下线" ? 1 : 2;
+    changeShopStatus(status, [record.shopId])
+      .then((res) => {
+        if (res.data.code === 200) {
+          message.success(`${record.control}成功`);
+          this.updateStatus([record.shopId]);
+        } else {
+          message.error("没有相应权限");
+        }
+      })
+      .catch((err) => {
+        console.log("上线下线请求出错", err);
+      });
   };
 
   // tabs click事件
   // 每一次选择，页码都要重新置为1
   tabClick = (key) => {
-    this.setState({
-      activeTab: key,
-      page: { ...this.state.page, currentPage: 1 },
-    });
+    this.setState(
+      {
+        activeTab: key,
+        page: { ...this.state.page, currentPage: 1 },
+      },
+      () => {
+        this.getTableData();
+      }
+    );
   };
 
   // 选择页面事件
@@ -287,6 +355,7 @@ class ShopLists extends React.Component {
 
   // 批量操作
   batch = () => {
+    console.log("选中的批量操作的行", this.state.selectedRowKeys);
     this.setState({ selectedRowKeys: [] }); //批量操作完了，复选框重置
     console.log("批量操作");
   };
@@ -379,11 +448,15 @@ class ShopLists extends React.Component {
   }
 }
 
-export default function ShopList() {
+export default function ShopList({ formData }) {
   const navigate = useNavigate();
+  const [obj, setObj] = useState(null);
+  useEffect(() => {
+    setObj(formData);
+  }, [formData]);
   return (
     <>
-      <ShopLists navigate={navigate} />
+      <ShopLists navigate={navigate} obj={obj} />
     </>
   );
 }
