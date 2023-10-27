@@ -4,7 +4,7 @@ export default function Approve(status, darctId) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: `http://cn-sc-plc-2.openfrp.top:57880/approval/commitByDraftId/${darctId}/${status}`,
+      url: `http://cn-hk-bgp-4.openfrp.top:12168/approval/commitByDraftId/${darctId}/${status}`,
     })
       .then((res) => {
         if (res.status === 200) {

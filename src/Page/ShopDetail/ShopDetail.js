@@ -243,9 +243,13 @@ export default function ShopDetail() {
     Approve(3, darctId)
       .then((res) => {
         console.log(res);
-        if (res.data.code === 200) {
-          message.success("审批成功");
-          navigate("./feature");
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            message.success("审批成功");
+            navigate("./feature");
+          } else {
+            message.error(res.data.msg);
+          }
         }
       })
       .catch((err) => {
@@ -266,9 +270,13 @@ export default function ShopDetail() {
     Approve(2, darctId)
       .then((res) => {
         console.log("审批驳回", res);
-        if (res.data.code === 200) {
-          message.success("操作成功");
-          navigate("/feature");
+        if (res.status === 200) {
+          if (res.data.code === 200) {
+            message.success("驳回成功");
+            navigate("./feature");
+          } else {
+            message.error(res.data.msg);
+          }
         }
       })
       .catch((err) => {
