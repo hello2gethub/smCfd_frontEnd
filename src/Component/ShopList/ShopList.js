@@ -223,7 +223,7 @@ class ShopLists extends React.Component {
       .then((res) => {
         // console.log("商品列表--", res.data.data);
         const total = res.data.data.total; // 数据总条数
-        let data = res.data.data.records.slice(0, pageSize); // 数据切片只展示相应条数
+        let data = res.data.data.records; // 数据切片只展示相应条数
         // 处理后端返回的数据,跟自己的对上
         let newData = Array.from({ length: data.length }, () => ({})); // 创建空对象数组
         data.forEach((item, index) => {
@@ -249,10 +249,16 @@ class ShopLists extends React.Component {
                 newData[index]["repertory"] = value;
                 break;
               case "startTime":
-                newData[index]["starTime"] = value.slice(0, 10);
+                if (value) {
+                  value = value.slice(0, 10);
+                }
+                newData[index]["starTime"] = value;
                 break;
               case "endTime":
-                newData[index]["endTime"] = value.slice(0, 10);
+                if (value) {
+                  value = value.slice(0, 10);
+                }
+                newData[index]["endTime"] = value;
                 break;
               case "caretaker":
                 newData[index]["agent"] = value;

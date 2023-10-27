@@ -43,6 +43,7 @@ export default function Headers() {
             onClick={() => {
               localStorage.clear();
               navigate("/");
+              setLogin(false);
             }}
           >
             退出登录

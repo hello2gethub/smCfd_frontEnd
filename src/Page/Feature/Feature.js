@@ -5,6 +5,7 @@ import React from "react";
 import moment from "moment";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import { useNavigate } from "react-router";
 
 // 引入子组件
 import Headers from "../../Component/Headers/Headers"; // 头部
@@ -16,7 +17,7 @@ import DratList from "../../Component/DratList/DratList";
 
 // 导航栏相关
 import { AppstoreTwoTone, PlaySquareTwoTone } from "@ant-design/icons";
-import { Layout, Menu, DatePicker, Select, Button, Input } from "antd";
+import { Layout, Menu, DatePicker, Select, Button, Input, message } from "antd";
 dayjs.extend(customParseFormat);
 const { Sider } = Layout;
 let menuList = [
@@ -28,7 +29,7 @@ let menuList = [
  * 功能页面---登录进来看到的首页
  */
 
-export default class Feature extends React.Component {
+class Features extends React.Component {
   initState = {
     selected: "control", // 默认选中侧边栏第一行,
     isFirst: true, // 默认显示商品管理
@@ -87,6 +88,18 @@ export default class Feature extends React.Component {
       });
     }
     this.setState({ menuListShow: menuList });
+  };
+
+  componentDidMount = () => {
+    // 校验是否登录
+    const userId = localStorage.getItem("userId");
+    const token = localStorage.getItem("token");
+    if (!userId || !token) {
+      message.error("请先登录~");
+      setTimeout(() => {
+        this.props.navigate("/lading");
+      }, 500);
+    }
   };
 
   /*--------------------  搜索栏事件处理函数  ------------------- */
@@ -338,4 +351,13 @@ export default class Feature extends React.Component {
       </>
     );
   }
+}
+
+export default function Feature() {
+  const navigate = useNavigate();
+  return (
+    <>
+      <Features navigate={navigate} />
+    </>
+  );
 }

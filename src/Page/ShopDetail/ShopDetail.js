@@ -62,6 +62,8 @@ export default function ShopDetail() {
   const location = useLocation();
   const shopId = location.state.shopId; // 拿到商品Id
   const darctId = location.state.darctId; // 拿到草稿Id
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
   const identity = localStorage.getItem("grade"); // 获取身份
   const initState = {
     grade: "", // 身份
@@ -115,6 +117,12 @@ export default function ShopDetail() {
 
   // 三个生命周期
   useEffect(() => {
+    // 校验是否登录
+    if (!userId || !token) {
+      message.error("请先登录~");
+      navigate("/lading");
+    }
+
     // 处理接收到的后端数据
     const handleData = (data) => {
       // console.log("data", Object.prototype.toString.call(data));
@@ -194,7 +202,7 @@ export default function ShopDetail() {
       }
     };
     getDetailsData();
-  }, [darctId, shopId]);
+  }, [token, userId, navigate, darctId, shopId]);
   //提交按钮所需
 
   //编辑按钮

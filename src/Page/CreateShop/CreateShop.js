@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { UploadOutlined } from "@ant-design/icons";
 import {
   Select,
@@ -48,6 +48,15 @@ export default function CreateShop() {
   const priceRef = useRef(null);
   const location = useLocation();
   const darctId = location.state; // 拿到草稿Id
+  const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+    // 校验登录
+    if (!userId || !token) {
+      navigate("/lading");
+      message.error("请先登录~");
+    }
+  }, [userId, token, navigate]);
 
   // 初始化form所有数据
   const initState = {
