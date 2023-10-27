@@ -1,7 +1,8 @@
 import { myAxios } from "../utils/myAxios";
 
 export default function changeShopStatus(status, ids) {
-  console.log("Arr", ids);
+  console.log("status", status);
+  console.log("ids", ids);
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",

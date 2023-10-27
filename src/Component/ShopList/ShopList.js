@@ -47,6 +47,7 @@ class ShopLists extends React.Component {
       total: 0, // 总数据条数
     },
     selectedRowKeys: [], //选择表格行的数量
+    selectedRows: [], // 存储选中的行数据
     showBox: false, // 二次确认框是否显示
     grade: null,
     record: null, // 操作的行
@@ -298,16 +299,23 @@ class ShopLists extends React.Component {
     this.setState({ ...this.state, tableData: newData });
   };
 
-  // 单次点击：用户点击了二次确认，发起上线或下线请求函数
-  putRequest = () => {
+  // 单次点击或多次点击：用户点击了二次确认，发起上线或下线请求函数
+  putRequest = (status, arr) => {
+    console.log("status1", status);
+    console.log("arr1", arr);
+    status || this.setState({ showBox: false, record: null });
     const { record } = this.state;
-    this.setState({ showBox: false, record: null });
-    const status = record.control === "下线" ? 1 : 2;
-    changeShopStatus(status, [record.shopId])
+    console.log("record", record);
+    if (!status) {
+      status = record.control === "下线" ? 2 : 1; // 传参了就是批量操作
+      console.log("asd");
+    }
+    arr = arr || [record.shopId];
+    changeShopStatus(status, arr)
       .then((res) => {
         if (res.data.code === 200) {
-          message.success(`${record.control}成功`);
-          this.updateStatus([record.shopId]);
+          message.success(`操作成功`);
+          this.updateStatus(arr);
         } else {
           message.error("没有相应权限");
         }
@@ -349,15 +357,33 @@ class ShopLists extends React.Component {
   };
 
   // 处理复选框
-  selectChange = (newRowKeys) => {
-    this.setState({ selectedRowKeys: newRowKeys });
+  selectChange = (selectedRowKeys, selectedRows) => {
+    this.setState({
+      ...this.state,
+      selectedRows: selectedRows,
+      selectedRowKeys: selectedRowKeys,
+    });
+    console.log(selectedRowKeys, selectedRows);
   };
 
   // 批量操作
   batch = () => {
-    console.log("选中的批量操作的行", this.state.selectedRowKeys);
-    this.setState({ selectedRowKeys: [] }); //批量操作完了，复选框重置
-    console.log("批量操作");
+    let arr = [];
+    let status = null;
+    this.state.selectedRows.forEach((item) => {
+      arr.push(item.shopId);
+      if (!status) {
+        status = item.control === "下线" ? 2 : 1;
+      }
+    });
+    console.log("status0", status);
+    this.putRequest(status, arr); // 发起批量请求
+    this.setState({
+      ...this.state,
+      selectedRows: [],
+      selectedRowKeys: [],
+      activeTab: "1",
+    }); //批量操作完了，复选框重置
   };
 
   // 跳转到新建商品页面
@@ -372,17 +398,17 @@ class ShopLists extends React.Component {
   };
 
   render() {
-    const { activeTab, tableData, tableTitle, page, selectedRowKeys } =
-      this.state;
+    const { activeTab, tableData, tableTitle, page } = this.state;
     const btnText = activeTab === "2" ? "批量下线" : "批量上线"; //设置批量按钮的文本
     const rowSelection =
       activeTab !== "1"
         ? {
-            selectedRowKeys,
-            onChange: this.selectChange,
+            onChange: (selectedRowKeys, selectedRows) => {
+              this.selectChange(selectedRowKeys, selectedRows);
+            },
           }
         : null; // 只有tabs为已上线或者已下线才有复选框
-    const hasSelected = selectedRowKeys.length > 0; // 用于判断是否显示选中条数
+    const hasSelected = this.state.selectedRowKeys.length > 0; // 用于判断是否显示选中条数
     return (
       <>
         <div className="shopList">
@@ -416,7 +442,9 @@ class ShopLists extends React.Component {
             }
           >
             <span className="selectedNum">
-              {hasSelected ? `已选择${selectedRowKeys.length}项` : ""}
+              {hasSelected
+                ? `已选择${this.state.selectedRowKeys.length}项`
+                : ""}
             </span>
             <Button className="batchBtn" type="primary" onClick={this.batch}>
               {btnText}
