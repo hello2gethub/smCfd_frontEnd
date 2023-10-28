@@ -4,7 +4,7 @@ export default function getWays(startTime, endTime) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: `http://cn-sc-plc-1.openfrp.top:41303/product/priceTypeRecords`,
+      url: `http://302ec0ad36118c7e82d2edef580f9632.pty.oscollege.net/product/priceTypeRecords`,
       data: {
         startTime: startTime,
         endTime: endTime,

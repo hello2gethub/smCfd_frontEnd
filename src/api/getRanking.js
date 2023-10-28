@@ -4,7 +4,7 @@ export default function getRanking(startTime, endTime) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: `http://cn-sc-plc-1.openfrp.top:41303/product/productRecordsList/20`,
+      url: `http://302ec0ad36118c7e82d2edef580f9632.pty.oscollege.net/product/productRecordsList/20`,
       data: {
         startTime: startTime,
         endTime: endTime,

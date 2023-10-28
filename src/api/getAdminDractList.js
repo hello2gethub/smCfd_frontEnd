@@ -4,7 +4,7 @@ export default function getAdminDractList(currentPage, pageSize) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "GET",
-      url: `http://cn-sc-plc-2.openfrp.top:57880/draft/unApprovalDraftList/${currentPage}/${pageSize}`,
+      url: `http://eac444cdfaa15ba19e6cfbcad464d876.pty.oscollege.net/draft/unApprovalDraftList/${currentPage}/${pageSize}`,
     })
       .then((res) => {
         if (res.status === 200) {

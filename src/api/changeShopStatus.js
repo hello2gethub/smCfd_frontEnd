@@ -6,7 +6,7 @@ export default function changeShopStatus(status, ids) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "POST",
-      url: `http://cn-sc-plc-1.openfrp.top:41303/product/editStatus/${status}`,
+      url: `http://302ec0ad36118c7e82d2edef580f9632.pty.oscollege.net/product/editStatus/${status}`,
       data: ids,
     })
       .then((res) => {

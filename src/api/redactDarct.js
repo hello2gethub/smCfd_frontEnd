@@ -4,7 +4,7 @@ export default function redactDarct(obj) {
   return new Promise((resolve, reject) => {
     myAxios({
       method: "PUT",
-      url: "http://cn-sc-plc-2.openfrp.top:57880/draft/editDraft",
+      url: "http://eac444cdfaa15ba19e6cfbcad464d876.pty.oscollege.net/draft/editDraft",
       data: {
         caretaker: obj.userId,
         cashPrice: obj.price,
